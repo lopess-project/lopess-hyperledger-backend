@@ -21,8 +21,8 @@ services:
             - "orderer0.org1.example.com:${IP_SERVER_1}"
             - "ca.org1.example.com:${IP_SERVER_1}"
         volumes:
-            - ../crypto-config/ordererOrganizations/example.com/orderers/orderer0.example.com/msp:/var/hyperledger/msp
-            - ../crypto-config/ordererOrganizations/example.com/orderers/orderer0.example.com/tls:/var/hyperledger/tls
+            - ../crypto-config/ordererOrganizations/org2.example.com/orderers/orderer0.org2.example.com/msp:/var/hyperledger/msp
+            - ../crypto-config/ordererOrganizations/org2.example.com/orderers/orderer0.org2.example.com/tls:/var/hyperledger/tls
             - ../network-config/:/var/hyperledger/configs
         networks:
           behave:
@@ -49,8 +49,8 @@ services:
             - "orderer0.org1.example.com:${IP_SERVER_1}"
             - "ca.org1.example.com:${IP_SERVER_1}"
         volumes:
-            - ../crypto-config/ordererOrganizations/example.com/orderers/orderer0.example.com/msp:/var/hyperledger/msp
-            - ../crypto-config/ordererOrganizations/example.com/orderers/orderer0.example.com/tls:/var/hyperledger/tls
+            - ../crypto-config/ordererOrganizations/org2.example.com/orderers/orderer1.org2.example.com/msp:/var/hyperledger/msp
+            - ../crypto-config/ordererOrganizations/org2.example.com/orderers/orderer1.org2.example.com/tls:/var/hyperledger/tls
             - ../network-config/:/var/hyperledger/configs
         networks:
           behave:
