@@ -14,6 +14,7 @@ services:
             - ORDERER_GENERAL_GENESISPROFILE=SampleMultiNodeEtcdRaft
             - ORDERER_ABSOLUTEMAXBYTES=${ORDERER_ABSOLUTEMAXBYTES}
             - ORDERER_PREFERREDMAXBYTES=${ORDERER_PREFERREDMAXBYTES}
+            - ORDERER_GENERAL_LOCALMSPID=Orderer2MSP
         extra_hosts:
             - "peer0.org1.example.com:${IP_SERVER_1}"
             - "peer1.org1.example.com:${IP_SERVER_1}"
@@ -43,6 +44,7 @@ services:
             - ORDERER_GENERAL_GENESISPROFILE=SampleMultiNodeEtcdRaft
             - ORDERER_ABSOLUTEMAXBYTES=${ORDERER_ABSOLUTEMAXBYTES}
             - ORDERER_PREFERREDMAXBYTES=${ORDERER_PREFERREDMAXBYTES}
+            - ORDERER_GENERAL_LOCALMSPID=Orderer2MSP
         extra_hosts:
             - "peer0.org1.example.com:${IP_SERVER_1}"
             - "peer1.org1.example.com:${IP_SERVER_1}"
