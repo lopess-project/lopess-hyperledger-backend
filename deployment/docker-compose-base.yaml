@@ -11,7 +11,6 @@ services:
             - ORDERER_HOME=/var/hyperledger/orderer
             - ORDERER_GENERAL_LOGLEVEL=debug
             - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/msp
-            - ORDERER_GENERAL_LOCALMSPID=OrdererMSP
             - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
             - ORDERER_GENERAL_LISTENPORT=7050
             - ORDERER_GENERAL_LEDGERTYPE=ram
