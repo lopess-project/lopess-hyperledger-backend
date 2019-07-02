@@ -13,7 +13,7 @@ OrdererOrgs:
     Specs:
       - Hostname: orderer0
       - Hostname: orderer1
-    - Name: Org2
+  - Name: Org2
     Domain: org2.example.com
     Specs:
       - Hostname: orderer0
