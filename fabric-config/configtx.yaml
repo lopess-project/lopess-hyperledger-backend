@@ -329,7 +329,7 @@ Profiles:
         Orderer:
             <<: *OrdererDefaults
             Organizations:
-                - *OrdererOrg
+                - *OrdererOrg1
             Capabilities:
                 <<: *OrdererCapabilities
         Consortiums:
@@ -360,13 +360,13 @@ Profiles:
                 - kafka.example.com:9092
 
             Organizations:
-            - *OrdererOrg
+            - *OrdererOrg1
             Capabilities:
                 <<: *OrdererCapabilities
         Application:
             <<: *ApplicationDefaults
             Organizations:
-            - <<: *OrdererOrg
+            - <<: *OrdererOrg1
         Consortiums:
             SampleConsortium:
                 Organizations:
