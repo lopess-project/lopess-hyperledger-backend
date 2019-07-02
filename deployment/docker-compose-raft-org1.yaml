@@ -27,9 +27,7 @@ services:
             - ../crypto-config/ordererOrganizations/org1.example.com/orderers/orderer0.org1.example.com/tls:/var/hyperledger/tls
             - ../network-config/:/var/hyperledger/configs
         networks:
-          behave:
-             aliases:
-               - ${CORE_PEER_NETWORKID}
+            - ${CORE_PEER_NETWORKID}
         ports:
           - 7050:7050
           
@@ -57,9 +55,7 @@ services:
             - ../crypto-config/ordererOrganizations/org1.example.com/orderers/orderer1.org1.example.com/tls:/var/hyperledger/tls
             - ../network-config/:/var/hyperledger/configs
         networks:
-          behave:
-             aliases:
-               - ${CORE_PEER_NETWORKID}
+            - ${CORE_PEER_NETWORKID}
         ports:
           - 8050:7050
 
