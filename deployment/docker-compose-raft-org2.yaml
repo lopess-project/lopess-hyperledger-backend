@@ -5,7 +5,7 @@ version: '2'
 services:
     orderer0.org2.example.com:
         extends:
-            file: docker-compose-base.yml
+            file: docker-compose-base.yaml
             service: orderer
         container_name: orderer0.org2.example.com
         environment:
@@ -19,7 +19,7 @@ services:
             - "peer0.org1.example.com:${IP_SERVER_1}"
             - "peer1.org1.example.com:${IP_SERVER_1}"
             - "orderer0.org1.example.com:${IP_SERVER_1}"
-            - "orderer0.org1.example.com:${IP_SERVER_1}"
+            - "orderer1.org1.example.com:${IP_SERVER_1}"
             - "ca.org1.example.com:${IP_SERVER_1}"
         volumes:
             - ../crypto-config/ordererOrganizations/org2.example.com/users:/var/hyperledger/users
@@ -35,7 +35,7 @@ services:
           
     orderer1.org2.example.com:
         extends:
-            file: docker-compose-base.yml
+            file: docker-compose-base.yaml
             service: orderer
         container_name: orderer1.org2.example.com
         environment:
@@ -49,7 +49,7 @@ services:
             - "peer0.org1.example.com:${IP_SERVER_1}"
             - "peer1.org1.example.com:${IP_SERVER_1}"
             - "orderer0.org1.example.com:${IP_SERVER_1}"
-            - "orderer0.org1.example.com:${IP_SERVER_1}"
+            - "orderer1.org1.example.com:${IP_SERVER_1}"
             - "ca.org1.example.com:${IP_SERVER_1}"
         volumes:
             - ../crypto-config/ordererOrganizations/org2.example.com/users:/var/hyperledger/users
