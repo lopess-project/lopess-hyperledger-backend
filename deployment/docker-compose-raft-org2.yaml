@@ -2,6 +2,10 @@
 
 version: '2'
 
+networks:
+    behave:
+
+
 services:
     orderer0.org2.example.com:
         extends:
