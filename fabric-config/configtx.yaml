@@ -16,9 +16,8 @@ Profiles:
 
     TwoOrgsChannel:
         Consortium: SampleConsortium
-        <<: *ChannelDefaults
         Application:
-            <<: *ApplicationDefault
+            <<: *ApplicationDefaults
             Organizations:
                 - *Org1
                 - *Org2
@@ -56,8 +55,7 @@ Profiles:
             Organizations:
             - *OrdererOrg1
             - *OrdererOrg2
-            Capabilities:
-                <<: *OrdererCapabilities
+            
         Application:
             <<: *ApplicationDefaults
 
