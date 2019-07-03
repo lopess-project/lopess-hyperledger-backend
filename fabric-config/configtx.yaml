@@ -6,62 +6,6 @@
 ---
 ################################################################################
 #
-#   Profile
-#
-#   - Different configuration profiles may be encoded here to be specified
-#   as parameters to the configtxgen tool
-#
-################################################################################
-Profiles:
-
-    TwoOrgsChannel:
-        Consortium: SampleConsortium
-        Application:
-            Organizations:
-                - *Org1
-                - *Org2
-
-
-    SampleMultiNodeEtcdRaft:
-        Orderer:
-            OrdererType: etcdraft
-            EtcdRaft:
-                Consenters:
-                - Host: orderer0.org1.example.com
-                  Port: 7050
-                  ClientTLSCert: ../crypto-config/ordererOrganizations/org1.example.com/orderers/orderer0.org1.example.com/tls/server.crt
-                  ServerTLSCert: ../crypto-config/ordererOrganizations/org1.example.com/orderers/orderer0.org1.example.com/tls/server.crt
-                - Host: orderer1.org1.example.com
-                  Port: 8050
-                  ClientTLSCert: ../crypto-config/ordererOrganizations/org1.example.com/orderers/orderer1.org1.example.com/tls/server.crt
-                  ServerTLSCert: ../crypto-config/ordererOrganizations/org1.example.com/orderers/orderer1.org1.example.com/tls/server.crt
-                - Host: orderer0.org2.example.com
-                  Port: 7050
-                  ClientTLSCert: ../crypto-config/ordererOrganizations/org2.example.com/orderers/orderer0.org2.example.com/tls/server.crt
-                  ServerTLSCert: ../crypto-config/ordererOrganizations/org2.example.com/orderers/orderer0.org2.example.com/tls/server.crt
-                - Host: orderer1.org2.example.com
-                  Port: 8050
-                  ClientTLSCert: ../crypto-config/ordererOrganizations/org2.example.com/orderers/orderer1.org2.example.com/tls/server.crt
-                  ServerTLSCert: ../crypto-config/ordererOrganizations/org2.example.com/orderers/orderer1.org2.example.com/tls/server.crt
-
-            Addresses:
-                - orderer0.org1.example.com:7050
-                - orderer1.org1.example.com:8050
-                - orderer0.org2.example.com:7050
-                - orderer1.org2.example.com:8050
-
-
-            Organizations:
-            - *OrdererOrg1
-            - *OrdererOrg2
-
-        Consortiums:
-            SampleConsortium:
-                Organizations:
-                - *Org1
-                - *Org2
-################################################################################
-#
 #   Section: Organizations
 #
 #   - This section defines the different organizational identities which will
@@ -130,4 +74,61 @@ Organizations:
             # encoded in the genesis block in the Application section context
             - Host: peer0.org2.example.com
               Port: 7051
+################################################################################
+#
+#   Profile
+#
+#   - Different configuration profiles may be encoded here to be specified
+#   as parameters to the configtxgen tool
+#
+################################################################################
+Profiles:
+
+    TwoOrgsChannel:
+        Consortium: SampleConsortium
+        Application:
+            Organizations:
+                - *Org1
+                - *Org2
+
+
+    SampleMultiNodeEtcdRaft:
+        Orderer:
+            OrdererType: etcdraft
+            EtcdRaft:
+                Consenters:
+                - Host: orderer0.org1.example.com
+                  Port: 7050
+                  ClientTLSCert: ../crypto-config/ordererOrganizations/org1.example.com/orderers/orderer0.org1.example.com/tls/server.crt
+                  ServerTLSCert: ../crypto-config/ordererOrganizations/org1.example.com/orderers/orderer0.org1.example.com/tls/server.crt
+                - Host: orderer1.org1.example.com
+                  Port: 8050
+                  ClientTLSCert: ../crypto-config/ordererOrganizations/org1.example.com/orderers/orderer1.org1.example.com/tls/server.crt
+                  ServerTLSCert: ../crypto-config/ordererOrganizations/org1.example.com/orderers/orderer1.org1.example.com/tls/server.crt
+                - Host: orderer0.org2.example.com
+                  Port: 7050
+                  ClientTLSCert: ../crypto-config/ordererOrganizations/org2.example.com/orderers/orderer0.org2.example.com/tls/server.crt
+                  ServerTLSCert: ../crypto-config/ordererOrganizations/org2.example.com/orderers/orderer0.org2.example.com/tls/server.crt
+                - Host: orderer1.org2.example.com
+                  Port: 8050
+                  ClientTLSCert: ../crypto-config/ordererOrganizations/org2.example.com/orderers/orderer1.org2.example.com/tls/server.crt
+                  ServerTLSCert: ../crypto-config/ordererOrganizations/org2.example.com/orderers/orderer1.org2.example.com/tls/server.crt
+
+            Addresses:
+                - orderer0.org1.example.com:7050
+                - orderer1.org1.example.com:8050
+                - orderer0.org2.example.com:7050
+                - orderer1.org2.example.com:8050
+
+
+            Organizations:
+            - *OrdererOrg1
+            - *OrdererOrg2
+
+        Consortiums:
+            SampleConsortium:
+                Organizations:
+                - *Org1
+                - *Org2
+
 
