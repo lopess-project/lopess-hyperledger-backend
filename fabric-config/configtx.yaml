@@ -17,7 +17,6 @@ Profiles:
     TwoOrgsChannel:
         Consortium: SampleConsortium
         Application:
-            <<: *ApplicationDefaults
             Organizations:
                 - *Org1
                 - *Org2
@@ -131,8 +130,4 @@ Organizations:
             # encoded in the genesis block in the Application section context
             - Host: peer0.org2.example.com
               Port: 7051
-
-
-Application: &ApplicationDefaults
-    Organizations:
 
