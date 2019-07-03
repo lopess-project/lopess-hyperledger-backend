@@ -219,7 +219,6 @@ Profiles:
     TwoOrgsOrdererGenesis:
         <<: *ChannelDefaults
         Orderer:
-            <<: *OrdererDefaults
             Organizations:
                 - *OrdererOrg1
             Capabilities:
@@ -245,7 +244,6 @@ Profiles:
         Capabilities:
             <<: *ChannelCapabilities
         Orderer:
-            <<: *OrdererDefaults
             OrdererType: kafka
             Kafka:
                 Brokers:
