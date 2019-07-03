@@ -43,7 +43,6 @@ services:
             - ORDERER_ABSOLUTEMAXBYTES=${ORDERER_ABSOLUTEMAXBYTES}
             - ORDERER_PREFERREDMAXBYTES=${ORDERER_PREFERREDMAXBYTES}
             - ORDERER_GENERAL_LOCALMSPID=Orderer1MSP
-            - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp
         extra_hosts:
             - "peer0.org2.example.com:${IP_SERVER_2}"
             - "peer1.org2.example.com:${IP_SERVER_2}"
@@ -53,7 +52,7 @@ services:
         volumes:
             - ../crypto-config/ordererOrganizations/org1.example.com/orderers/orderer0.org1.example.com/msp:/var/hyperledger/orderer/msp
             - ../crypto-config/ordererOrganizations/org1.example.com/users:/var/hyperledger/users
-            - ../crypto-config/ordererOrganizations/org1.example.com/orderers/orderer0.org1.example.com/tls:/var/hyperledger/tls
+            - ../crypto-config/ordererOrganizations/org1.example.com/orderers/orderer0.org1.example.com/tls:/var/hyperledger/orderer/tls
             - ../network-config/:/var/hyperledger/configs
         networks:
           behave:
@@ -73,7 +72,6 @@ services:
             - ORDERER_ABSOLUTEMAXBYTES=${ORDERER_ABSOLUTEMAXBYTES}
             - ORDERER_PREFERREDMAXBYTES=${ORDERER_PREFERREDMAXBYTES}
             - ORDERER_GENERAL_LOCALMSPID=Orderer1MSP
-            - ORDERER_GENERAL_LOCALMSPDIR=
         extra_hosts:
             - "peer0.org2.example.com:${IP_SERVER_2}"
             - "peer1.org2.example.com:${IP_SERVER_2}"
@@ -83,7 +81,7 @@ services:
         volumes:
             - ../crypto-config/ordererOrganizations/org1.example.com/orderers/orderer1.org1.example.com/msp:/var/hyperledger/orderer/msp
             - ../crypto-config/ordererOrganizations/org1.example.com/users:/var/hyperledger/users
-            - ../crypto-config/ordererOrganizations/org1.example.com/orderers/orderer1.org1.example.com/tls:/var/hyperledger/tls
+            - ../crypto-config/ordererOrganizations/org1.example.com/orderers/orderer1.org1.example.com/tls:/var/hyperledger/orderer/tls
             - ../network-config/:/var/hyperledger/configs
         networks:
           behave:
