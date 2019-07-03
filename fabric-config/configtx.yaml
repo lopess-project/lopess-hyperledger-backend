@@ -27,7 +27,24 @@ Organizations:
         # MSPDir is the filesystem path which contains the MSP configuration
         MSPDir: ../crypto-config/ordererOrganizations/org1.example.com/msp
 
-                
+        Policies: &OrdererOrg1Policy
+            Readers:
+                Type: Signature
+                Rule: "OR('Orderer1MSP.member')"
+                # If your MSP is configured with the new NodeOUs, you might
+                # want to use a more specific rule like the following:
+                # Rule: "OR('SampleOrg.admin', 'SampleOrg.peer', 'SampleOrg.client')"
+            Writers:
+                Type: Signature
+                Rule: "OR('Orderer1MSP.member')"
+                # If your MSP is configured with the new NodeOUs, you might
+                # want to use a more specific rule like the following:
+                # Rule: "OR('SampleOrg.admin', 'SampleOrg.client')"
+            Admins:
+                Type: Signature
+                Rule: "OR('Orderer1MSP.admin')"
+
+
     - &OrdererOrg2
         # DefaultOrg defines the organization which is used in the sampleconfig
         # of the fabric.git development environment
@@ -39,6 +56,24 @@ Organizations:
         # MSPDir is the filesystem path which contains the MSP configuration
         MSPDir: ../crypto-config/ordererOrganizations/org2.example.com/msp
 
+        Policies: &OrdererOrg2Policy
+            Readers:
+                Type: Signature
+                Rule: "OR('Orderer2MSP.member')"
+                # If your MSP is configured with the new NodeOUs, you might
+                # want to use a more specific rule like the following:
+                # Rule: "OR('SampleOrg.admin', 'SampleOrg.peer', 'SampleOrg.client')"
+            Writers:
+                Type: Signature
+                Rule: "OR('Orderer2MSP.member')"
+                # If your MSP is configured with the new NodeOUs, you might
+                # want to use a more specific rule like the following:
+                # Rule: "OR('SampleOrg.admin', 'SampleOrg.client')"
+            Admins:
+                Type: Signature
+                Rule: "OR('Orderer2MSP.admin')"
+
+
     - &Org1
         # DefaultOrg defines the organization which is used in the sampleconfig
         # of the fabric.git development environment
@@ -49,6 +84,22 @@ Organizations:
 
         MSPDir: ../crypto-config/peerOrganizations/org1.example.com/msp
 
+        Policies:
+            Readers:
+                Type: Signature
+                Rule: "OR('Org1MSP.admin', 'Org1MSP.peer', 'Org1MSP.client')"
+                # If your MSP is configured with the new NodeOUs, you might
+                # want to use a more specific rule like the following:
+                # Rule: "OR('SampleOrg.admin', 'SampleOrg.peer', 'SampleOrg.client')"
+            Writers:
+                Type: Signature
+                Rule: "OR('Org1MSP.admin', 'Org1MSP.peer', 'Org1MSP.client')"
+                # If your MSP is configured with the new NodeOUs, you might
+                # want to use a more specific rule like the following:
+                # Rule: "OR('SampleOrg.admin', 'SampleOrg.client')"
+            Admins:
+                Type: Signature
+                Rule: "OR('Org1MSP.admin')"
 
         # leave this flag set to true.
         AnchorPeers:
@@ -68,12 +119,56 @@ Organizations:
 
         MSPDir: ../crypto-config/peerOrganizations/org2.example.com/msp
 
+        Policies:
+            Readers:
+                Type: Signature
+                Rule: "OR('Org2MSP.admin', 'Org2MSP.peer', 'Org2MSP.client')"
+                # If your MSP is configured with the new NodeOUs, you might
+                # want to use a more specific rule like the following:
+                # Rule: "OR('SampleOrg.admin', 'SampleOrg.peer', 'SampleOrg.client')"
+            Writers:
+                Type: Signature
+                Rule: "OR('Org2MSP.admin', 'Org2MSP.peer', 'Org2MSP.client')"
+                # If your MSP is configured with the new NodeOUs, you might
+                # want to use a more specific rule like the following:
+                # Rule: "OR('SampleOrg.admin', 'SampleOrg.client')"
+            Admins:
+                Type: Signature
+                Rule: "OR('Org2MSP.admin')"
+
         AnchorPeers:
             # AnchorPeers defines the location of peers which can be used
             # for cross org gossip communication.  Note, this value is only
             # encoded in the genesis block in the Application section context
             - Host: peer0.org2.example.com
               Port: 7051
+
+################################################################################
+#
+#   CHANNEL
+#
+#   This section defines the values to encode into a config transaction or
+#   genesis block for channel related parameters.
+#
+################################################################################
+Channel: &ChannelDefaults
+    # Policies defines the set of policies at this level of the config tree
+    # For Channel policies, their canonical path is
+    #   /Channel/<PolicyName>
+    Policies:
+        # Who may invoke the 'Deliver' API
+        Readers:
+            Type: ImplicitMeta
+            Rule: "ANY Readers"
+        # Who may invoke the 'Broadcast' API
+        Writers:
+            Type: ImplicitMeta
+            Rule: "ANY Writers"
+        # By default, who may modify elements at this config level
+        Admins:
+            Type: ImplicitMeta
+            Rule: "MAJORITY Admins"
+
 ################################################################################
 #
 #   Profile
@@ -85,14 +180,26 @@ Organizations:
 Profiles:
 
     TwoOrgsChannel:
+        <<: *ChannelDefaults
         Consortium: SampleConsortium
         Application:
             Organizations:
-                - *Org1
-                - *Org2
+                - <<: *Org1
+                - <<: *Org2
+            Policies:
+                Readers:
+                  Type: ImplicitMeta
+                  Rule: "ANY Readers"
+                Writers:
+                  Type: ImplicitMeta
+                  Rule: "ANY Writers"
+                Admins:
+                  Type: ImplicitMeta
+                  Rule: "MAJORITY Admins"
 
 
     SampleMultiNodeEtcdRaft:
+        <<: *ChannelDefaults
         Orderer:
             OrdererType: etcdraft
             EtcdRaft:
@@ -114,21 +221,36 @@ Profiles:
                   ClientTLSCert: ../crypto-config/ordererOrganizations/org2.example.com/orderers/orderer1.org2.example.com/tls/server.crt
                   ServerTLSCert: ../crypto-config/ordererOrganizations/org2.example.com/orderers/orderer1.org2.example.com/tls/server.crt
 
-            Addresses:
-                - orderer0.org1.example.com:7050
-                - orderer1.org1.example.com:8050
-                - orderer0.org2.example.com:7050
-                - orderer1.org2.example.com:8050
+                Options:
+                  TickInterval: 500ms
+                  ElectionTick: 10
+                  HeartbeatTick: 1
+                  MaxInflightBlocks: 5
+                  SnapshotIntervalSize: 20 MB
 
+            Addresses:
+              - orderer0.org1.example.com:7050
+              - orderer1.org1.example.com:8050
+              - orderer0.org2.example.com:7050
+              - orderer1.org2.example.com:8050
 
             Organizations:
-            - *OrdererOrg1
-            - *OrdererOrg2
+              - <<: *OrdererOrg1
+              - <<: *OrdererOrg2
+
+            Policies:
+                Readers:
+                  Type: ImplicitMeta
+                  Rule: "ANY Readers"
+                Writers:
+                  Type: ImplicitMeta
+                  Rule: "ANY Writers"
+                Admins:
+                  Type: ImplicitMeta
+                  Rule: "MAJORITY Admins"
 
         Consortiums:
             SampleConsortium:
                 Organizations:
-                - *Org1
-                - *Org2
-
-
+                  - <<: *Org1
+                  - <<: *Org2
