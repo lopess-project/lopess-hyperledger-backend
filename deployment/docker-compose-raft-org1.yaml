@@ -14,7 +14,6 @@ services:
         environment:
             - ORDERER_HOST=orderer0.org1.example.com
             - CONFIGTX_ORDERER_ORDERERTYPE=etcdraft
-            - ORDERER_GENERAL_GENESISPROFILE=SampleMultiNodeEtcdRaft
             - ORDERER_ABSOLUTEMAXBYTES=${ORDERER_ABSOLUTEMAXBYTES}
             - ORDERER_PREFERREDMAXBYTES=${ORDERER_PREFERREDMAXBYTES}
             - ORDERER_GENERAL_LOCALMSPID=Orderer1MSP
@@ -44,7 +43,6 @@ services:
         environment:
             - ORDERER_HOST=orderer1.org1.example.com
             - CONFIGTX_ORDERER_ORDERERTYPE=etcdraft
-            - ORDERER_GENERAL_GENESISPROFILE=SampleMultiNodeEtcdRaft
             - ORDERER_ABSOLUTEMAXBYTES=${ORDERER_ABSOLUTEMAXBYTES}
             - ORDERER_PREFERREDMAXBYTES=${ORDERER_PREFERREDMAXBYTES}
             - ORDERER_GENERAL_LOCALMSPID=Orderer1MSP
