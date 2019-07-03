@@ -26,7 +26,7 @@ services:
             - "ca.org2.example.com:${IP_SERVER_2}"
         volumes:
             - ../crypto-config/ordererOrganizations/org1.example.com/users:/var/hyperledger/users
-            - ../crypto-config/ordererOrganizations/org1.example.com/orderers/orderer0.org1.example.com/msp:/var/hyperledger/msp
+            - ../crypto-config/ordererOrganizations/org1.example.com/orderers/orderer0.org1.example.com/msp:/var/hyperledger/orderer/msp
             - ../crypto-config/ordererOrganizations/org1.example.com/orderers/orderer0.org1.example.com/tls:/var/hyperledger/tls
             - ../network-config/:/var/hyperledger/configs
         networks:
@@ -56,7 +56,7 @@ services:
             - "ca.org2.example.com:${IP_SERVER_2}"
         volumes:
             - ../crypto-config/ordererOrganizations/org1.example.com/users:/var/hyperledger/users
-            - ../crypto-config/ordererOrganizations/org1.example.com/orderers/orderer1.org1.example.com/msp:/var/hyperledger/msp
+            - ../crypto-config/ordererOrganizations/org1.example.com/orderers/orderer1.org1.example.com/msp:/var/hyperledger/orderer/msp
             - ../crypto-config/ordererOrganizations/org1.example.com/orderers/orderer1.org1.example.com/tls:/var/hyperledger/tls
             - ../network-config/:/var/hyperledger/configs
         networks:

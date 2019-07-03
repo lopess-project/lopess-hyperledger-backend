@@ -10,14 +10,8 @@ OrdererOrgs:
     # ---------------------------------------------------------------------------
     # "Specs" - See PeerOrgs below for complete description
     # ---------------------------------------------------------------------------
-    Specs:
-      - Hostname: orderer0
-      - Hostname: orderer1
-  - Name: Org2
-    Domain: org2.example.com
-    Specs:
-      - Hostname: orderer0
-      - Hostname: orderer1
+    Template:
+      Count: 4
 
 # ---------------------------------------------------------------------------
 # "PeerOrgs" - Definition of organizations managing peer nodes

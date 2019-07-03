@@ -10,7 +10,7 @@ services:
             - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=${CORE_PEER_NETWORKID}_behave
             - ORDERER_HOME=/var/hyperledger/orderer
             - ORDERER_GENERAL_LOGLEVEL=debug
-            - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/msp
+            - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp
             - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
             - ORDERER_GENERAL_LISTENPORT=7050
             - ORDERER_GENERAL_LEDGERTYPE=ram
@@ -45,8 +45,8 @@ services:
             - CORE_PEER_GOSSIP_ORGLEADER=false
             - CORE_PEER_GOSSIP_USELEADERELECTION=true
             - CORE_PEER_PROFILE_ENABLED=true
-            - CORE_PEER_MSPCONFIGPATH=/var/hyperledger/msp
-            #- CORE_LEDGER_STATE_STATEDATABASE=LevelDB
+            - CORE_PEER_MSPCONFIGPATH=/var/hyperledger/peers/msp
+            - CORE_LEDGER_STATE_STATEDATABASE=LevelDB
             - CORE_LOGGING_LEVEL=DEBUG
             - CORE_LOGGING_GOSSIP=${CORE_LOGGING_GOSSIP}
             - CORE_LOGGING_MSP=DEBUG
