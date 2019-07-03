@@ -55,9 +55,6 @@ Profiles:
             Organizations:
             - *OrdererOrg1
             - *OrdererOrg2
-            
-        Application:
-            <<: *ApplicationDefaults
 
         Consortiums:
             SampleConsortium:
