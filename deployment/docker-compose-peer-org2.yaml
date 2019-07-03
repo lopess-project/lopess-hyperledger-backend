@@ -20,12 +20,12 @@ services:
             - CORE_PEER_GOSSIP_ORGLEADER=${CORE_PEER_GOSSIP_ORGLEADER_PEER0_ORG2}
             - CORE_PEER_GOSSIP_USELEADERELECTION=${CORE_PEER_GOSSIP_USELEADERELECTION_PEER0_ORG2}
             - CORE_PEER_LOCALMSPID=Org2MSP
-            - CORE_PEER_TLS_CLIENTROOTCAS_FILES=/var/hyperledger/users/Admin@org1.example.com/tls/ca.crt
-            - CORE_PEER_TLS_CLIENTCERT_FILE=/var/hyperledger/users/Admin@org1.example.com/tls/client.crt
-            - CORE_PEER_TLS_CLIENTKEY_FILE=/var/hyperledger/users/Admin@org1.example.com/tls/client.key
+            - CORE_PEER_TLS_CLIENTROOTCAS_FILES=/var/hyperledger/users/Admin@org2.example.com/tls/ca.crt
+            - CORE_PEER_TLS_CLIENTCERT_FILE=/var/hyperledger/users/Admin@org2.example.com/tls/client.crt
+            - CORE_PEER_TLS_CLIENTKEY_FILE=/var/hyperledger/users/Admin@org2.example.com/tls/client.key
         volumes:
-            - ../crypto-config/peerOrganizations/org2.example.com/peers/peer0.org1.example.com/msp:/var/hyperledger/peers/msp
-            - ../crypto-config/peerOrganizations/org2.example.com/peers/peer0.org1.example.com/tls:/var/hyperledger/tls
+            - ../crypto-config/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/msp:/var/hyperledger/peers/msp
+            - ../crypto-config/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls:/var/hyperledger/peers/tls
             - ../crypto-config/peerOrganizations/org2.example.com/users:/var/hyperledger/users
             - ../network-config/:/var/hyperledger/configs
         extra_hosts:
@@ -56,12 +56,12 @@ services:
             - CORE_PEER_GOSSIP_ORGLEADER=${CORE_PEER_GOSSIP_ORGLEADER_PEER0_ORG2}
             - CORE_PEER_GOSSIP_USELEADERELECTION=${CORE_PEER_GOSSIP_USELEADERELECTION_PEER0_ORG2}
             - CORE_PEER_LOCALMSPID=Org2MSP
-            - CORE_PEER_TLS_CLIENTROOTCAS_FILES=/var/hyperledger/users/Admin@org1.example.com/tls/ca.crt
-            - CORE_PEER_TLS_CLIENTCERT_FILE=/var/hyperledger/users/Admin@org1.example.com/tls/client.crt
-            - CORE_PEER_TLS_CLIENTKEY_FILE=/var/hyperledger/users/Admin@org1.example.com/tls/client.key
+            - CORE_PEER_TLS_CLIENTROOTCAS_FILES=/var/hyperledger/users/Admin@org2.example.com/tls/ca.crt
+            - CORE_PEER_TLS_CLIENTCERT_FILE=/var/hyperledger/users/Admin@org2.example.com/tls/client.crt
+            - CORE_PEER_TLS_CLIENTKEY_FILE=/var/hyperledger/users/Admin@org2.example.com/tls/client.key
         volumes:
-            - ../crypto-config/peerOrganizations/org2.example.com/peers/peer0.org1.example.com/msp:/var/hyperledger/peers/msp
-            - ../crypto-config/peerOrganizations/org2.example.com/peers/peer0.org1.example.com/tls:/var/hyperledger/tls
+            - ../crypto-config/peerOrganizations/org2.example.com/peers/peer1.org2.example.com/msp:/var/hyperledger/peers/msp
+            - ../crypto-config/peerOrganizations/org2.example.com/peers/peer1.org2.example.com/tls:/var/hyperledger/peers/tls
             - ../crypto-config/peerOrganizations/org2.example.com/users:/var/hyperledger/users
             - ../network-config/:/var/hyperledger/configs
         extra_hosts:
