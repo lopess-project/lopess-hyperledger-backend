@@ -56,6 +56,7 @@ Afterwards check on each machine if the containers are up and running. If so, th
 *  Create the channel (channel name is scka-channel btw) and let all the peers join
 *  Update Anchor Peers
 *  Install and instantiate the chaincode in order to interact
+*  Invoke and query
 
 # Create & Join Channel
 
@@ -117,6 +118,30 @@ When the cli was closed and reentered, proceed as follows. Otherwise do it the o
 
 `$ peer chaincode install -n mycc -v 1.0 -p github.com/chaincode`
 `$ CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp CORE_PEER_ADDRESS=peer1.org2.example.com:8051 CORE_PEER_LOCALMSPID="Org2MSP" CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/peers/peer1.org2.example.com/tls/ca.crt peer chaincode install -n mycc -v 1.0 -p github.com/chaincode`
+
+Now that the chaincode is installed on every node, we need to instantiate it once. See below.
+
+* Host 1
+
+`$ peer chaincode instantiate -o orderer0.org1.example.com:7050 --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/org1.example.com/orderers/orderer0.org1.example.com/msp/tlscacerts/tlsca.org1.example.com-cert.pem -C scka-channel -n mycc -v 1.0 -c '{"Args":["init"]}' -P "AND ('Org1MSP.peer','Org2MSP.peer')`
+
+The last part defines the endorsing policy of the channel, which means a transaction needs to be endorsed by at least one peer of org1 AND one peer of org2. When this is done, we can invoke and query transactions.
+
+# Invoke and query chaincode
+
+* Host 2
+
+`$ peer chaincode query -C scka-channel -n mycc -c '{"Args":["getMeasurementRecords"]}'`
+
+* Host 1
+
+`$ peer chaincode invoke -o orderer0.org1.example.com:7050 --tls true --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/org1.example.com/orderers/orderer0.org1.example.com/msp/tlscacerts/tlsca.org1.example.com-cert.pem -C scka-channel -n mycc --peerAddresses peer0.org1.example.com:7051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt --peerAddresses peer0.org2.example.com:7051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt -c '{"Args":["initLedger"]}'`
+`$ peer chaincode invoke -o orderer0.org1.example.com:7050 --tls true --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/org1.example.com/orderers/orderer0.org1.example.com/msp/tlscacerts/tlsca.org1.example.com-cert.pem -C scka-channel -n mycc --peerAddresses peer0.org1.example.com:7051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt --peerAddresses peer0.org2.example.com:7051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt -c '{"Args":["registerMeasurement","param1"]}'`
+
+* Host 2
+
+`$ peer chaincode query -C scka-channel -n mycc -c '{"Args":["getMeasurementRecords"]}'`
+
 
 # Helpful Tutorials
 
