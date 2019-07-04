@@ -93,7 +93,7 @@ Organizations:
                 # Rule: "OR('SampleOrg.admin', 'SampleOrg.peer', 'SampleOrg.client')"
             Writers:
                 Type: Signature
-                Rule: "OR('Org1MSP.admin', 'Org1MSP.peer', 'Org1MSP.client')"
+                Rule: "OR('Org1MSP.admin', 'Org1MSP.client')"
                 # If your MSP is configured with the new NodeOUs, you might
                 # want to use a more specific rule like the following:
                 # Rule: "OR('SampleOrg.admin', 'SampleOrg.client')"
@@ -128,7 +128,7 @@ Organizations:
                 # Rule: "OR('SampleOrg.admin', 'SampleOrg.peer', 'SampleOrg.client')"
             Writers:
                 Type: Signature
-                Rule: "OR('Org2MSP.admin', 'Org2MSP.peer', 'Org2MSP.client')"
+                Rule: "OR('Org2MSP.admin', 'Org2MSP.client')"
                 # If your MSP is configured with the new NodeOUs, you might
                 # want to use a more specific rule like the following:
                 # Rule: "OR('SampleOrg.admin', 'SampleOrg.client')"
@@ -169,6 +169,26 @@ Channel: &ChannelDefaults
             Type: ImplicitMeta
             Rule: "MAJORITY Admins"
 
+Application: &ApplicationDefaults
+
+    # Organizations is the list of orgs which are defined as participants on
+    # the application side of the network
+    Organizations:
+
+    # Policies defines the set of policies at this level of the config tree
+    # For Application policies, their canonical path is
+    #   /Channel/Application/<PolicyName>
+    Policies:
+        Readers:
+            Type: ImplicitMeta
+            Rule: "ANY Readers"
+        Writers:
+            Type: ImplicitMeta
+            Rule: "ANY Writers"
+        Admins:
+            Type: ImplicitMeta
+            Rule: "MAJORITY Admins"
+
 ################################################################################
 #
 #   Profile
@@ -183,19 +203,10 @@ Profiles:
         <<: *ChannelDefaults
         Consortium: SampleConsortium
         Application:
+            <<: *ApplicationDefaults
             Organizations:
-                - <<: *Org1
-                - <<: *Org2
-            Policies:
-                Readers:
-                  Type: ImplicitMeta
-                  Rule: "ANY Readers"
-                Writers:
-                  Type: ImplicitMeta
-                  Rule: "ANY Writers"
-                Admins:
-                  Type: ImplicitMeta
-                  Rule: "MAJORITY Admins"
+                - *Org1
+                - *Org2
 
 
     SampleMultiNodeEtcdRaft:
@@ -235,8 +246,8 @@ Profiles:
               - orderer1.org2.example.com:8050
 
             Organizations:
-              - <<: *OrdererOrg1
-              - <<: *OrdererOrg2
+              - *OrdererOrg1
+              - *OrdererOrg2
 
             Policies:
                 Readers:
@@ -248,9 +259,20 @@ Profiles:
                 Admins:
                   Type: ImplicitMeta
                   Rule: "MAJORITY Admins"
+                # BlockValidation specifies what signatures must be included in the block
+                # from the orderer for the peer to validate it.
+                BlockValidation:
+                  Type: ImplicitMeta
+                  Rule: "ANY Writers"
 
+        Application:
+            <<: *ApplicationDefaults
+            Organizations:
+            - <<: *OrdererOrg1
+            - <<: *OrdererOrg2
+        
         Consortiums:
             SampleConsortium:
                 Organizations:
-                  - <<: *Org1
-                  - <<: *Org2
+                  - *Org1
+                  - *Org2

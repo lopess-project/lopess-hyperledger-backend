@@ -65,6 +65,8 @@ services:
             - ../crypto-config/peerOrganizations/org1.example.com/users:/var/hyperledger/users
             - ../network-config/:/var/hyperledger/configs
         extra_hosts:
+            - "orderer0.org1.example.com:${IP_SERVER_1}"
+            - "orderer1.org1.example.com:${IP_SERVER_1}"
             - "orderer0.org2.example.com:${IP_SERVER_2}"
             - "orderer1.org2.example.com:${IP_SERVER_2}"
             - "ca.org2.example.com:${IP_SERVER_2}"
