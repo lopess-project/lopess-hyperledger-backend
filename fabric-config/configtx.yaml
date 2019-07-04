@@ -220,8 +220,8 @@ Profiles:
 
     SampleMultiNodeEtcdRaft:
         <<: *ChannelDefaults
-        Capabilities:
-            <<: *ChannelCapabilities
+        #Capabilities:
+            #<<: *ChannelCapabilities
         Orderer:
             OrdererType: etcdraft
             EtcdRaft:
