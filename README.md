@@ -51,12 +51,64 @@ Host 2:
 * $ docker-compose -f deployment/docker-base-cli-org2.yaml up -d
 
 Afterwards check on each machine if the containers are up and running. If so, the following steps need to be performed:
-*  Start the network
 *  Create the channel (channel name is scka-channel btw) and let all the peers join
 *  Update Anchor Peers
 *  Install and instantiate the chaincode in order to interact
 
-How this is done on a single node env can be read here:
+# Create & Join Channel
+
+* Host 1:
+
+`$ docker exec -it cli bash`
+`$ peer channel create -o orderer0.org1.example.com:7050 -c scka-channel -f ./network-config/channel.tx --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/org1.example.com/orderers/orderer0.org1.example.com/msp/tlscacerts/tlsca.org1.example.com-cert.pem`
+`$ peer channel join -b scka-channel.block`
+
+The second command will output a channel config block named scka-channel.block , which needs to be send to the other peers in order to join the networks. 
+
+To send this block to the peer on the same host, simply change environment variables within the cli by adding them before the actual command:
+
+`CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp CORE_PEER_ADDRESS=peer1.org1.example.com:8051 CORE_PEER_LOCALMSPID="Org1MSP" CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer1.org1.example.com/tls/ca.crt peer channel join -b scka-channel.block`
+
+Now the channel block needs to be transfered to host 2. Therefore first copy it from your docker volume to your local machine:
+
+`docker cp peer0.org1.example.com:/opt/gopath/src/github.com/hyperledger/fabric/peer/scka-channel.block . `
+
+From there transfer it to the second host via scp:
+
+`scp scka-channel.block user@host2:<project-dir>`
+
+* Host 2:
+
+Join peer0 from org2:
+
+`$ docker cp scka-channel.block peer0.org2.example.com:/opt/gopath/src/github.com/hyperledger/fabric/peer/scka-channel.block`
+`$ docker exec -it cli bash`
+`$ peer channel join -b scka-channel.block`
+
+Join peer1 from org2:
+
+`CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp CORE_PEER_ADDRESS=peer1.org2.example.com:8051 CORE_PEER_LOCALMSPID="Org2MSP" CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/peers/peer1.org2.example.com/tls/ca.crt peer channel join -b scka-channel.block`
+
+# Update Anchor Peers
+
+(still within the cli of peer1)
+
+* Host 1
+
+`peer channel update -o orderer0.org1.example.com:7050 -c scka-channel -f ./network-config/Org1MSPanchors.tx --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/org1.example.com/orderers/orderer0.org1.example.com/msp/tlscacerts/tlsca.org1.example.com-cert.pem`
+
+
+* Host 2
+
+`peer channel update -o orderer0.org2.example.com:7050 -c scka-channel -f ./network-config/Org2MSPanchors.tx --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/org2.example.com/orderers/orderer0.org2.example.com/msp/tlscacerts/tlsca.org2.example.com-cert.pem`
+
+# Install and instantiate chaincode
+
+
+
+# Helpful Tutorials
+
+How the setup is done on a single node env can be read here:
 
 [https://hyperledger-fabric.readthedocs.io/en/release-1.4/build_network.html#start-the-network](url)
 
