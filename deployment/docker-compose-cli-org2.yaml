@@ -6,7 +6,7 @@ networks:
 services:
   cli:
     container_name: cli
-    image: hyperledger/fabric-tools
+    image: hyperledger/fabric-tools:${HLF_VERSION_TAG}
     tty: true
     environment:
       - GOPATH=/opt/gopath
