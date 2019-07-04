@@ -57,7 +57,7 @@ type SensorData struct {
 	Pm25      float32 `json:"pm25"`
 }
 
-// Define the devince info structure, with 3 properties.  Structure tags are used by encoding/json library
+// Define the devince info structure, with 4 properties.  Structure tags are used by encoding/json library
 type DeviceInfo struct {
 	PublicKey      string `json:"pubKey"`
 	EncodingScheme int    `json:"code"`
@@ -66,7 +66,7 @@ type DeviceInfo struct {
 }
 
 /*
- * The Init method is called when the Smart Contract "fabcar" is instantiated by the blockchain network
+ * The Init method is called when the Smart Contract is instantiated by the blockchain network
  * Best practice is to have any Ledger initialization in separate function -- see initLedger()
  */
 func (s *SmartContract) Init(APIstub shim.ChaincodeStubInterface) sc.Response {
@@ -92,6 +92,8 @@ func (s *SmartContract) Invoke(APIstub shim.ChaincodeStubInterface) sc.Response 
 		return s.getMeasurementRecords(APIstub)
 	} else if function == "initLedger" {
 		return s.initLedger(APIstub)
+	} else if function == "getDeviceRecords" {
+		return s.getDeviceRecords(APIstub)
 	}
 	return shim.Error("Invalid Smart Contract function name.")
 }
@@ -272,7 +274,49 @@ func (s *SmartContract) getMeasurementRecords(APIstub shim.ChaincodeStubInterfac
 	}
 	buffer.WriteString("]")
 
-	fmt.Printf("- queryAllData:\n%s\n", buffer.String())
+	fmt.Printf("- queryMeasurementData:\n%s\n", buffer.String())
+
+	return shim.Success(buffer.Bytes())
+}
+
+func (s *SmartContract) getDeviceRecords(APIstub shim.ChaincodeStubInterface) sc.Response {
+
+	resultsIterator, err := APIstub.GetStateByRange("", "")
+	if err != nil {
+		return shim.Error(err.Error())
+	}
+	defer resultsIterator.Close()
+
+	// buffer is a JSON array containing QueryResults
+	var buffer bytes.Buffer
+	buffer.WriteString("[")
+
+	bArrayMemberAlreadyWritten := false
+	for resultsIterator.HasNext() {
+		queryResponse, err := resultsIterator.Next()
+		if err != nil {
+			return shim.Error(err.Error())
+		}
+		// Add a comma before array members, suppress it for the first array member
+		if bArrayMemberAlreadyWritten == true {
+			buffer.WriteString(",")
+		}
+		if strings.HasPrefix(queryResponse.Key, "Device") == true {
+			buffer.WriteString("{\"Key\":")
+			buffer.WriteString("\"")
+			buffer.WriteString(queryResponse.Key)
+			buffer.WriteString("\"")
+
+			buffer.WriteString(", \"Record\":")
+			// Record is a JSON object, so we write as-is
+			buffer.WriteString(string(queryResponse.Value))
+			buffer.WriteString("}")
+			bArrayMemberAlreadyWritten = true
+		}
+	}
+	buffer.WriteString("]")
+
+	fmt.Printf("- queryDeviceData:\n%s\n", buffer.String())
 
 	return shim.Success(buffer.Bytes())
 }

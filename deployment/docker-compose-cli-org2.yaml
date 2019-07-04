@@ -22,8 +22,11 @@ services:
       - CORE_CHAINCODE_KEEPALIVE=10
       - FABRIC_LOGGING_SPEC=INFO
     extra_hosts:
+      - "peer0.org1.example.com:${IP_SERVER_1}"
+      - "peer1.org1.example.com:${IP_SERVER_1}"
       - "orderer0.org1.example.com:${IP_SERVER_1}"
       - "orderer1.org1.example.com:${IP_SERVER_1}"
+      - "ca.org1.example.com:${IP_SERVER_1}"
     working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
     command: /bin/bash
     volumes:
