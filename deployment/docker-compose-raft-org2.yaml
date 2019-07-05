@@ -77,7 +77,6 @@ services:
             - "orderer1.org1.example.com:${IP_SERVER_1}"
             - "ca.org1.example.com:${IP_SERVER_1}"
         volumes:
-            - ../crypto-config/ordererOrganizations/org2.example.com/users/Admin@org2.example.com:/var/hyperledger/users/Admin@example.com
             - ../crypto-config/ordererOrganizations/org2.example.com/orderers/orderer1.org2.example.com/msp:/var/hyperledger/orderer/msp
             - ../crypto-config/ordererOrganizations/org2.example.com/orderers/orderer1.org2.example.com/tls:/var/hyperledger/orderer/tls
             - ../network-config/:/var/hyperledger/configs
