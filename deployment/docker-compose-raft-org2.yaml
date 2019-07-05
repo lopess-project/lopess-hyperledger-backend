@@ -5,6 +5,9 @@ version: '2'
 networks:
     behave:
 
+volumes:
+  orderer0.org2.example.com:
+  orderer1.org2.example.com:
 
 services:
     ca.org2.example.com:
@@ -57,6 +60,7 @@ services:
             - ../crypto-config/ordererOrganizations/org2.example.com/orderers/orderer0.org2.example.com/msp:/var/hyperledger/orderer/msp
             - ../crypto-config/ordererOrganizations/org2.example.com/orderers/orderer0.org2.example.com/tls:/var/hyperledger/orderer/tls
             - ../network-config/:/var/hyperledger/configs
+            - orderer0.org2.example.com:/var/hyperledger/production/orderer
         networks:
           behave:
              aliases:
@@ -87,6 +91,7 @@ services:
             - ../crypto-config/ordererOrganizations/org2.example.com/orderers/orderer1.org2.example.com/msp:/var/hyperledger/orderer/msp
             - ../crypto-config/ordererOrganizations/org2.example.com/orderers/orderer1.org2.example.com/tls:/var/hyperledger/orderer/tls
             - ../network-config/:/var/hyperledger/configs
+            - orderer1.org2.example.com:/var/hyperledger/production/orderer
         networks:
           behave:
              aliases:

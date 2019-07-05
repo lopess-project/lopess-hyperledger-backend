@@ -30,6 +30,7 @@ services:
             - ../crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls:/var/hyperledger/peers/tls
             - ../crypto-config/peerOrganizations/org1.example.com/users:/var/hyperledger/users
             - ../network-config/:/var/hyperledger/configs
+            - peer0.org1.example.com:/var/hyperledger/production
         extra_hosts:
             - "orderer0.org2.example.com:${IP_SERVER_2}"
             - "orderer1.org2.example.com:${IP_SERVER_2}"
@@ -68,6 +69,7 @@ services:
             - ../crypto-config/peerOrganizations/org1.example.com/peers/peer1.org1.example.com/tls:/var/hyperledger/peers/tls
             - ../crypto-config/peerOrganizations/org1.example.com/users:/var/hyperledger/users
             - ../network-config/:/var/hyperledger/configs
+            - peer1.org1.example.com:/var/hyperledger/production
         extra_hosts:
             - "orderer0.org2.example.com:${IP_SERVER_2}"
             - "orderer1.org2.example.com:${IP_SERVER_2}"

@@ -231,7 +231,7 @@ Profiles:
                   ClientTLSCert: ../crypto-config/ordererOrganizations/org1.example.com/orderers/orderer0.org1.example.com/tls/server.crt
                   ServerTLSCert: ../crypto-config/ordererOrganizations/org1.example.com/orderers/orderer0.org1.example.com/tls/server.crt
                 - Host: orderer1.org1.example.com
-                  Port: 8050
+                  Port: 7050
                   ClientTLSCert: ../crypto-config/ordererOrganizations/org1.example.com/orderers/orderer1.org1.example.com/tls/server.crt
                   ServerTLSCert: ../crypto-config/ordererOrganizations/org1.example.com/orderers/orderer1.org1.example.com/tls/server.crt
                 - Host: orderer0.org2.example.com
@@ -239,7 +239,7 @@ Profiles:
                   ClientTLSCert: ../crypto-config/ordererOrganizations/org2.example.com/orderers/orderer0.org2.example.com/tls/server.crt
                   ServerTLSCert: ../crypto-config/ordererOrganizations/org2.example.com/orderers/orderer0.org2.example.com/tls/server.crt
                 - Host: orderer1.org2.example.com
-                  Port: 8050
+                  Port: 7050
                   ClientTLSCert: ../crypto-config/ordererOrganizations/org2.example.com/orderers/orderer1.org2.example.com/tls/server.crt
                   ServerTLSCert: ../crypto-config/ordererOrganizations/org2.example.com/orderers/orderer1.org2.example.com/tls/server.crt
 
@@ -252,9 +252,9 @@ Profiles:
 
             Addresses:
               - orderer0.org1.example.com:7050
-              - orderer1.org1.example.com:8050
+              - orderer1.org1.example.com:7050
               - orderer0.org2.example.com:7050
-              - orderer1.org2.example.com:8050
+              - orderer1.org2.example.com:7050
 
             Organizations:
               - *OrdererOrg1
