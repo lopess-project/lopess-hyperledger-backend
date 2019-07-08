@@ -24,8 +24,8 @@ services:
     extra_hosts:
       - "peer0.org2.example.com:${IP_SERVER_2}"
       - "peer1.org2.example.com:${IP_SERVER_2}"
-      - "orderer2.example.com:${IP_SERVER_2}"
-      - "orderer3.example.com:${IP_SERVER_2}"
+      - "orderer0.org2.example.com:${IP_SERVER_2}"
+      - "orderer1.org2.example.com:${IP_SERVER_2}"
     working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
     command: /bin/bash
     volumes:

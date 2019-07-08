@@ -5,18 +5,27 @@ OrdererOrgs:
   # ---------------------------------------------------------------------------
   # Orderer
   # ---------------------------------------------------------------------------
-  - Name: Orderer
-    Domain: example.com
+  - Name: OrdererOrg1
+    Domain: org1.example.com
     EnableNodeOUs: false
     Template:
-      Count: 4
+      Count: 2
       SANS:
           - "localhost"
           - "127.0.0.1"
-          - "orderer0.example.com"
-          - "orderer1.example.com"
-          - "orderer2.example.com"
-          - "orderer3.example.com"
+          - "orderer0.org1.example.com"
+          - "orderer1.org1.example.com"
+
+  - Name: OrdererOrg2
+    Domain: org2.example.com
+    EnableNodeOUs: false
+    Template:
+      Count: 2
+      SANS:
+          - "localhost"
+          - "127.0.0.1"
+          - "orderer0.org2.example.com"
+          - "orderer1.org2.example.com"
 
 
 
@@ -68,7 +77,9 @@ PeerOrgs:
       SANS:
           - "localhost"
           - "127.0.0.1"
-          
+          - "peer0.org1.example.com"
+          - "peer1.org1.example.com"
+
       # Start: 5
       # Hostname: {{.Prefix}}{{.Index}} # default
     # ---------------------------------------------------------------------------
@@ -89,5 +100,7 @@ PeerOrgs:
       SANS:
           - "localhost"
           - "127.0.0.1"
+          - "peer0.org2.example.com"
+          - "peer1.org2.example.com"
     Users:
       Count: 1

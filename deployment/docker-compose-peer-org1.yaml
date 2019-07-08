@@ -36,8 +36,8 @@ services:
             - ../network-config/:/var/hyperledger/configs
             - peer0.org1.example.com:/var/hyperledger/production
         extra_hosts:
-            - "orderer2.example.com:${IP_SERVER_2}"
-            - "orderer3.example.com:${IP_SERVER_2}"
+            - "orderer0.org2.example.com:${IP_SERVER_2}"
+            - "orderer1.org2.example.com:${IP_SERVER_2}"
             - "ca.org2.example.com:${IP_SERVER_2}"
             - "peer1.org2.example.com:${IP_SERVER_2}"
             - "peer2.org2.example.com:${IP_SERVER_2}"
@@ -75,8 +75,8 @@ services:
             - ../network-config/:/var/hyperledger/configs
             - peer1.org1.example.com:/var/hyperledger/production
         extra_hosts:
-            - "orderer2.example.com:${IP_SERVER_2}"
-            - "orderer3.example.com:${IP_SERVER_2}"
+            - "orderer0.org2.example.com:${IP_SERVER_2}"
+            - "orderer1.org2.example.com:${IP_SERVER_2}"
             - "ca.org2.example.com:${IP_SERVER_2}"
             - "peer1.org2.example.com:${IP_SERVER_2}"
             - "peer2.org2.example.com:${IP_SERVER_2}"
