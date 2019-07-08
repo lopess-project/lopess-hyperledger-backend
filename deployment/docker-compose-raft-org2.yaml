@@ -17,7 +17,7 @@ services:
             - FABRIC_CA_SERVER_CA_NAME=ca.org2.example.com
             - FABRIC_CA_SERVER_TLS_ENABLED=true
             - FABRIC_CA_SERVER_TLS_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.org2.example.com-cert.pem
-            - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/9f540427473f1d41dd679c4b7020e7c37e226fa86256f55e60fc06ac90b99131_sk
+            - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/23008f2ac549a5a54f4c3c385b25d679749cb4746be57b724f2a6ac0354cf5e4_sk
             - FABRIC_CA_SERVER_PORT=7054
         extra_hosts:
             - "peer0.org1.example.com:${IP_SERVER_1}"
