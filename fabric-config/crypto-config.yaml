@@ -7,11 +7,12 @@ OrdererOrgs:
   # ---------------------------------------------------------------------------
   - Name: Orderer
     Domain: example.com
-    Specs:
-      - Hostname: orderer0
-      - Hostname: orderer1
-      - Hostname: orderer2
-      - Hostname: orderer3
+    EnableNodeOUs: false
+    Template:
+      Count: 4
+      SANS:
+          - "localhost"
+          - "127.0.0.1"
 
 
 
@@ -60,6 +61,9 @@ PeerOrgs:
     # ---------------------------------------------------------------------------
     Template:
       Count: 2
+      SANS:
+          - "localhost"
+          - "127.0.0.1"
       # Start: 5
       # Hostname: {{.Prefix}}{{.Index}} # default
     # ---------------------------------------------------------------------------
@@ -77,5 +81,8 @@ PeerOrgs:
     EnableNodeOUs: true
     Template:
       Count: 2
+      SANS:
+          - "localhost"
+          - "127.0.0.1"
     Users:
       Count: 1

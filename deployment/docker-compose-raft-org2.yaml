@@ -60,7 +60,7 @@ services:
              aliases:
                - ${CORE_PEER_NETWORKID}
         ports:
-          - 9050:7050
+          - 7050:7050
 
     orderer3.example.com:
         extends:
@@ -85,4 +85,4 @@ services:
              aliases:
                - ${CORE_PEER_NETWORKID}
         ports:
-          - 10050:7050
+          - 8050:7050
