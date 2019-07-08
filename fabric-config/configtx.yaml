@@ -226,19 +226,19 @@ Profiles:
             OrdererType: etcdraft
             EtcdRaft:
                 Consenters:
-                - Host: orderer0.org1.example.com
+                - Host: orderer0.example.com
                   Port: 7050
                   ClientTLSCert: ../crypto-config/ordererOrganizations/example.com/orderers/orderer0.example.com/tls/server.crt
                   ServerTLSCert: ../crypto-config/ordererOrganizations/example.com/orderers/orderer0.example.com/tls/server.crt
-                - Host: orderer1.org1.example.com
+                - Host: orderer1.example.com
                   Port: 7050
                   ClientTLSCert: ../crypto-config/ordererOrganizations/example.com/orderers/orderer1.example.com/tls/server.crt
                   ServerTLSCert: ../crypto-config/ordererOrganizations/example.com/orderers/orderer1.example.com/tls/server.crt
-                - Host: orderer0.org2.example.com
+                - Host: orderer2.example.com
                   Port: 7050
                   ClientTLSCert: ../crypto-config/ordererOrganizations/example.com/orderers/orderer2.example.com/tls/server.crt
                   ServerTLSCert: ../crypto-config/ordererOrganizations/example.com/orderers/orderer2.example.com/tls/server.crt
-                - Host: orderer1.org2.example.com
+                - Host: orderer3.example.com
                   Port: 7050
                   ClientTLSCert: ../crypto-config/ordererOrganizations/example.com/orderers/orderer3.example.com/tls/server.crt
                   ServerTLSCert: ../crypto-config/ordererOrganizations/example.com/orderers/orderer3.example.com/tls/server.crt
