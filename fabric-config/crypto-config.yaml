@@ -13,6 +13,8 @@ OrdererOrgs:
       SANS:
           - "localhost"
           - "127.0.0.1"
+          - "${IP_SERVER_1}"
+          - "${IP_SERVER_2}"
 
 
 
