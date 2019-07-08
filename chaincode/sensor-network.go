@@ -49,12 +49,16 @@ import (
 type SmartContract struct {
 }
 
-// Define the sensor data structure, with 4 properties.  Structure tags are used by encoding/json library
+// Define the sensor data structure, with 8 properties.  Structure tags are used by encoding/json library
 type SensorData struct {
-	DeviceId  string  `json:"deviceId"`
-	Timestamp string  `json:"timestamp"`
-	Pm10      float32 `json:"pm10"`
-	Pm25      float32 `json:"pm25"`
+	DeviceId   string    `json:"deviceId"`
+	Pm10       float32   `json:"pm10"`
+	Pm25       float32   `json:"pm25"`
+	Temp       float32   `json:"temp"`
+	Humidity   float32   `json:"humidity"`
+	Timestamp  time.Time `json:"timestamp"`
+	Longtitude string    `json:"longtitude"`
+	Latitude   string    `json:"latitude"`
 }
 
 // Define the devince info structure, with 4 properties.  Structure tags are used by encoding/json library
@@ -101,10 +105,10 @@ func (s *SmartContract) Invoke(APIstub shim.ChaincodeStubInterface) sc.Response 
 func (s *SmartContract) initLedger(APIstub shim.ChaincodeStubInterface) sc.Response {
 	devices := []DeviceInfo{
 		DeviceInfo{PublicKey: "+sBjAJFDE5c1iML63cPh6MPRUDPQgS3Kcwcvg+NkPFI", EncodingScheme: 0, Owner: "org1", ValidationFlag: true},
-		DeviceInfo{PublicKey: "39b23651ccc0b2c21c40161d54cad2ae663e48c6ee8124da188378ce1fa60d69", EncodingScheme: 0, Owner: "org2", ValidationFlag: true},
-		DeviceInfo{PublicKey: "d912e6d6e200f8e0db86ec7d173604b30a1d87188df052a4c7dd2ba7fc0b4f37", EncodingScheme: 0, Owner: "org1", ValidationFlag: true},
-		DeviceInfo{PublicKey: "9a39c7a3e10f23a94c28aa8688a8e0dd0ce9e86f37675670c64d0f529e147a40", EncodingScheme: 0, Owner: "org2", ValidationFlag: true},
-		DeviceInfo{PublicKey: "202fb11920d8450cd99d3761ec3e5f139474a5694f7031108f45bcf093881b14", EncodingScheme: 0, Owner: "org1", ValidationFlag: true},
+		DeviceInfo{PublicKey: "RakaJDXqkmm0YzwKxTo4BVVko5T/7oElNdP2FGrUHu8", EncodingScheme: 0, Owner: "org2", ValidationFlag: true},
+		DeviceInfo{PublicKey: "IQ1BO5vN3mcdQz6ZyV1f77uMJnpbJOL1IMqNUiJENeU", EncodingScheme: 0, Owner: "org1", ValidationFlag: true},
+		DeviceInfo{PublicKey: "cOGzNiLH0e2C7WstGQfZk3CRdDSwR3yt58OeTc7f+V0", EncodingScheme: 0, Owner: "org2", ValidationFlag: true},
+		DeviceInfo{PublicKey: "CQatsesQKp+qRTQPsAVTQdg6JBDsIIp9iaCgsWPxPUo", EncodingScheme: 0, Owner: "org1", ValidationFlag: true},
 	}
 	i := 0
 	for i < len(devices) {
@@ -161,12 +165,19 @@ func (s *SmartContract) revokeDevice(APIstub shim.ChaincodeStubInterface, args [
 
 func (s *SmartContract) registerMeasurement(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
 
-	if len(args) != 1 {
+	if len(args) != 2 {
 		return shim.Error("Incorrect number of arguments. Expecting 1.")
 	}
 
 	b, err := base64.StdEncoding.DecodeString(args[0])
+
 	if err != nil {
+		return shim.Error("Decoding from base64 to bytes failed.")
+	}
+
+	b2, err1 := base64.StdEncoding.DecodeString(args[1])
+
+	if err1 != nil {
 		return shim.Error("Decoding from base64 to bytes failed.")
 	}
 	// parse input string based on decoding scheme
@@ -187,11 +198,11 @@ func (s *SmartContract) registerMeasurement(APIstub shim.ChaincodeStubInterface,
 		enc := device.EncodingScheme
 		switch enc {
 		case 0:
-			data, txId = decodeMessageWithDefaultEncodingScheme(b, device, deviceId)
+			data, txId = decodeMessageWithDefaultEncodingScheme(b, b2, device, deviceId)
 		case 1:
-			data, txId = decodeMessageWithAlternateEncodingScheme(b, device, deviceId)
+			data, txId = decodeMessageWithAlternateEncodingScheme(b, b2, device, deviceId)
 		default:
-			data, txId = decodeMessageWithDefaultEncodingScheme(b, device, deviceId)
+			data, txId = decodeMessageWithDefaultEncodingScheme(b, b2, device, deviceId)
 		}
 		if (data == SensorData{} || txId == "") {
 			return shim.Error("Error occured while decoding the message. Either decoding from hex to bytes threw the error or the signature is not valid.")
@@ -202,8 +213,8 @@ func (s *SmartContract) registerMeasurement(APIstub shim.ChaincodeStubInterface,
 	return shim.Success(nil)
 }
 
-func decodeMessageWithDefaultEncodingScheme(b []byte, device DeviceInfo, deviceId uint16) (SensorData, string) {
-	/* Default Encoding:
+func decodeMessageWithDefaultEncodingScheme(b, b2 []byte, device DeviceInfo, deviceId uint16) (SensorData, string) {
+	/* Default Encoding: (Byte Array starts counting at posistion 0)
 	** Byte 1:		Header: 10101010
 	** Byte 2-3:	Device Id: (1-65535)
 	** Byte 4-19:	UUID of the transaction
@@ -211,14 +222,21 @@ func decodeMessageWithDefaultEncodingScheme(b []byte, device DeviceInfo, deviceI
 	** Byte 21:		HighByte Pm10
 	** Byte 22:		LowByte Pm25
 	** Byte 23:		HighByte Pm25
-	** Byte 24-87:	Signature
+	** Byte 24:		LowByte Humidity
+	** Byte 25:		HighByte Humidity
+	** Byte 26:		LowByte Temp
+	** Byte 27:		HighByte Temp
+	** Byte 28-33:	Timestamp hh:mm:ss
+	** Byte 34-44:	Latitude
+	** Byte 45-56:  Longtitude
+	** Byte 57-120:	Signature
 	 */
 	pubKeyFromDevice, err := base64.RawStdEncoding.DecodeString(device.PublicKey)
 	if err != nil {
 		return SensorData{}, "encoding failure..."
 	}
-	msg := []byte(b[:23])
-	signature := []byte(b[23:87])
+	msg := []byte(b[:56])
+	signature := b2
 	verification := ed25519.Verify(pubKeyFromDevice, msg, signature)
 	if !verification {
 		return SensorData{}, ""
@@ -228,11 +246,16 @@ func decodeMessageWithDefaultEncodingScheme(b []byte, device DeviceInfo, deviceI
 	deviceIdStr := "Device" + strconv.Itoa(int(deviceId))
 	pm10 := calculatePMValueFromBytes(b[19], b[20])
 	pm25 := calculatePMValueFromBytes(b[21], b[22])
-	var data = SensorData{DeviceId: deviceIdStr, Timestamp: "00:00:00", Pm10: pm10, Pm25: pm25}
+	humidity := calculateHumidityFromBytes(b[23], b[24])
+	temp := calculateTempFromBytes(b[25], b[26])
+	timestamp := convertTimestampToDate(b[27:33], time.Now().UTC())
+	latitude := calculateLatitudeFromCharBytes(b[33:44])
+	longtitude := calculateLongtitudeFromCharBytes(b[44:56])
+	var data = SensorData{DeviceId: deviceIdStr, Timestamp: timestamp, Pm10: pm10, Pm25: pm25, Humidity: humidity, Temp: temp, Latitude: latitude, Longtitude: longtitude}
 	return data, txId
 }
 
-func decodeMessageWithAlternateEncodingScheme(b []byte, device DeviceInfo, deviceId uint16) (SensorData, string) {
+func decodeMessageWithAlternateEncodingScheme(b, b2 []byte, device DeviceInfo, deviceId uint16) (SensorData, string) {
 	//todo
 	return SensorData{}, ""
 }
@@ -336,10 +359,92 @@ func calculatePMValueFromBytes(b1, b2 byte) float32 {
 	return f
 }
 
-// expects 4 byte input
-func convertMillisToTime(b []byte) time.Time {
-	m := binary.BigEndian.Uint32(b)
-	return time.Unix(0, int64(m)*int64(time.Millisecond))
+func calculateTempFromBytes(b1, b2 byte) float32 {
+	b2value := b2 & 0x7F
+	lowByte := binary.BigEndian.Uint16([]byte{0, b1})
+	highByte := binary.BigEndian.Uint16([]byte{b2value, 0})
+
+	t := float32(highByte+lowByte) / 10.0
+	b2check := b2 & 0x80
+	if b2check != 0 {
+		t = t * (-1)
+	}
+	return t
+}
+
+func calculateHumidityFromBytes(b1, b2 byte) float32 {
+	lowByte := binary.BigEndian.Uint16([]byte{0, b1})
+	highByte := binary.BigEndian.Uint16([]byte{b2, 0})
+	h := float32(highByte+lowByte) / 10.0
+	return h
+}
+
+func calculateLatitudeFromCharBytes(b []byte) string {
+	degree := string(b[:3])
+	hours := string(b[3:5])
+	seconds := string(b[5:10])
+	orientation := string(b[10])
+
+	var str strings.Builder
+	str.WriteString(degree)
+	str.WriteString("°")
+	str.WriteString(hours)
+	str.WriteString("'")
+	str.WriteString(seconds)
+	str.WriteString("\"")
+	str.WriteString(orientation)
+
+	return str.String()
+}
+
+func calculateLongtitudeFromCharBytes(b []byte) string {
+	degree := string(b[:4])
+	hours := string(b[4:6])
+	seconds := string(b[6:11])
+	orientation := string(b[11])
+
+	var str strings.Builder
+	str.WriteString(degree)
+	str.WriteString("°")
+	str.WriteString(hours)
+	str.WriteString("'")
+	str.WriteString(seconds)
+	str.WriteString("\"")
+	str.WriteString(orientation)
+
+	return str.String()
+}
+
+// expects 6 byte input + current_time := time.Now().UTC()
+func convertTimestampToDate(b []byte, current_time time.Time) time.Time {
+	hh := string(b[:2])
+	mm := string(b[2:4])
+	ss := string(b[4:6])
+
+	hours, err := strconv.Atoi(hh)
+	minutes, err := strconv.Atoi(mm)
+	seconds, err := strconv.Atoi(ss)
+
+	timeNow := current_time.Format("15:04:05")
+	dateNow := current_time.Format("2006-01-02")
+
+	//get date --- assuming that latency is < 1h
+	if hh == "23" {
+		if timeNow[:2] != hh {
+			newDate := current_time.AddDate(0, 0, -1)
+			dateNow = newDate.Format("2006-01-02")
+		}
+	}
+
+	year, err := strconv.Atoi(string(dateNow[:4]))
+	month, err := strconv.Atoi(string(dateNow[5:7]))
+	day, err := strconv.Atoi(string(dateNow[8:10]))
+
+	if err != nil {
+		fmt.Println("Something went wrong when converting time to Date.")
+	}
+
+	return time.Date(year, time.Month(month), day, hours, minutes, seconds, 0, time.UTC)
 }
 
 // The main function is only relevant in unit test mode. Only included here for completeness.
