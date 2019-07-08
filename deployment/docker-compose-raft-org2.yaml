@@ -6,8 +6,8 @@ networks:
     behave:
 
 volumes:
-  orderer0.org2.example.com:
-  orderer1.org2.example.com:
+  orderer2.example.com:
+  orderer3.example.com:
 
 services:
     ca.org2.example.com:
@@ -22,8 +22,8 @@ services:
         extra_hosts:
             - "peer0.org1.example.com:${IP_SERVER_1}"
             - "peer1.org1.example.com:${IP_SERVER_1}"
-            - "orderer0.org1.example.com:${IP_SERVER_1}"
-            - "orderer1.org1.example.com:${IP_SERVER_1}"
+            - "orderer0.example.com:${IP_SERVER_1}"
+            - "orderer1.example.com:${IP_SERVER_1}"
             - "ca.org1.example.com:${IP_SERVER_1}"
         ports:
             - "7054:7054"
@@ -37,25 +37,24 @@ services:
                 - ${CORE_PEER_NETWORKID}
 
 
-    orderer0.org2.example.com:
+    orderer2.example.com:
         extends:
             file: docker-compose-base.yaml
             service: orderer
-        container_name: orderer0.org2.example.com
+        container_name: orderer2.example.com
         environment:
-            - ORDERER_GENERAL_LOCALMSPID=Orderer2MSP
+            - ORDERER_GENERAL_LOCALMSPID=Orderer1MSP
         extra_hosts:
             - "peer0.org1.example.com:${IP_SERVER_1}"
             - "peer1.org1.example.com:${IP_SERVER_1}"
-            - "orderer0.org1.example.com:${IP_SERVER_1}"
-            - "orderer1.org1.example.com:${IP_SERVER_1}"
+            - "orderer0.example.com:${IP_SERVER_1}"
+            - "orderer1.example.com:${IP_SERVER_1}"
             - "ca.org1.example.com:${IP_SERVER_1}"
         volumes:
-            - ../crypto-config/ordererOrganizations/org2.example.com/users/Admin@org2.example.com:/var/hyperledger/users/Admin@example.com
-            - ../crypto-config/ordererOrganizations/org2.example.com/orderers/orderer0.org2.example.com/msp:/var/hyperledger/orderer/msp
-            - ../crypto-config/ordererOrganizations/org2.example.com/orderers/orderer0.org2.example.com/tls:/var/hyperledger/orderer/tls
+            - ../crypto-config/ordererOrganizations/example.com/orderers/orderer2.example.com/msp:/var/hyperledger/orderer/msp
+            - ../crypto-config/ordererOrganizations/example.com/orderers/orderer2.example.com/tls:/var/hyperledger/orderer/tls
             - ../network-config/:/var/hyperledger/configs
-            - orderer0.org2.example.com:/var/hyperledger/production/orderer
+            - orderer2.example.com:/var/hyperledger/production/orderer
         networks:
           behave:
              aliases:
@@ -63,24 +62,24 @@ services:
         ports:
           - 7050:7050
 
-    orderer1.org2.example.com:
+    orderer3.example.com:
         extends:
             file: docker-compose-base.yaml
             service: orderer
-        container_name: orderer1.org2.example.com
+        container_name: orderer3.example.com
         environment:
-            - ORDERER_GENERAL_LOCALMSPID=Orderer2MSP
+            - ORDERER_GENERAL_LOCALMSPID=Orderer1MSP
         extra_hosts:
             - "peer0.org1.example.com:${IP_SERVER_1}"
             - "peer1.org1.example.com:${IP_SERVER_1}"
-            - "orderer0.org1.example.com:${IP_SERVER_1}"
-            - "orderer1.org1.example.com:${IP_SERVER_1}"
+            - "orderer0.example.com:${IP_SERVER_1}"
+            - "orderer1.example.com:${IP_SERVER_1}"
             - "ca.org1.example.com:${IP_SERVER_1}"
         volumes:
-            - ../crypto-config/ordererOrganizations/org2.example.com/orderers/orderer1.org2.example.com/msp:/var/hyperledger/orderer/msp
-            - ../crypto-config/ordererOrganizations/org2.example.com/orderers/orderer1.org2.example.com/tls:/var/hyperledger/orderer/tls
+            - ../crypto-config/ordererOrganizations/example.com/orderers/orderer3.example.com/msp:/var/hyperledger/orderer/msp
+            - ../crypto-config/ordererOrganizations/example.com/orderers/orderer3.example.com/tls:/var/hyperledger/orderer/tls
             - ../network-config/:/var/hyperledger/configs
-            - orderer1.org2.example.com:/var/hyperledger/production/orderer
+            - orderer3.example.com:/var/hyperledger/production/orderer
         networks:
           behave:
              aliases:
