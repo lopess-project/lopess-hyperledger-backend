@@ -19,10 +19,10 @@ Organizations:
     - &OrdererOrg1
         # DefaultOrg defines the organization which is used in the sampleconfig
         # of the fabric.git development environment
-        Name: OrdererOrg1
+        Name: OrdererOrg1MSP
 
         # ID to load the MSP definition as
-        ID: Orderer1MSP
+        ID: OrdererOrg1MSP
 
         # MSPDir is the filesystem path which contains the MSP configuration
         MSPDir: ../crypto-config/ordererOrganizations/org1.example.com/msp
@@ -30,28 +30,28 @@ Organizations:
         Policies: &OrdererOrg1Policy
             Readers:
                 Type: Signature
-                Rule: "OR('Orderer1MSP.member')"
+                Rule: "OR('OrdererOrg1MSP.member')"
                 # If your MSP is configured with the new NodeOUs, you might
                 # want to use a more specific rule like the following:
                 # Rule: "OR('SampleOrg.admin', 'SampleOrg.peer', 'SampleOrg.client')"
             Writers:
                 Type: Signature
-                Rule: "OR('Orderer1MSP.member')"
+                Rule: "OR('OrdererOrg1MSP.member')"
                 # If your MSP is configured with the new NodeOUs, you might
                 # want to use a more specific rule like the following:
                 # Rule: "OR('SampleOrg.admin', 'SampleOrg.client')"
             Admins:
                 Type: Signature
-                Rule: "OR('Orderer1MSP.admin')"
+                Rule: "OR('OrdererOrg1MSP.admin')"
 
 
     - &OrdererOrg2
         # DefaultOrg defines the organization which is used in the sampleconfig
         # of the fabric.git development environment
-        Name: OrdererOrg2
+        Name: OrdererOrg2MSP
 
         # ID to load the MSP definition as
-        ID: Orderer2MSP
+        ID: OrdererOrg2MSP
 
         # MSPDir is the filesystem path which contains the MSP configuration
         MSPDir: ../crypto-config/ordererOrganizations/org2.example.com/msp
@@ -59,19 +59,19 @@ Organizations:
         Policies: &OrdererOrg2Policy
             Readers:
                 Type: Signature
-                Rule: "OR('Orderer2MSP.member')"
+                Rule: "OR('OrdererOrg2MSP.member')"
                 # If your MSP is configured with the new NodeOUs, you might
                 # want to use a more specific rule like the following:
                 # Rule: "OR('SampleOrg.admin', 'SampleOrg.peer', 'SampleOrg.client')"
             Writers:
                 Type: Signature
-                Rule: "OR('Orderer2MSP.member')"
+                Rule: "OR('OrdererOrg2MSP.member')"
                 # If your MSP is configured with the new NodeOUs, you might
                 # want to use a more specific rule like the following:
                 # Rule: "OR('SampleOrg.admin', 'SampleOrg.client')"
             Admins:
                 Type: Signature
-                Rule: "OR('Orderer2MSP.admin')"
+                Rule: "OR('OrdererOrg2MSP.admin')"
 
 
     - &Org1

@@ -10,46 +10,18 @@ volumes:
   orderer1.org2.example.com:
 
 services:
-    ca.org2.example.com:
-        image: hyperledger/fabric-ca:${HLF_VERSION_TAG}
-        environment:
-            - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
-            - FABRIC_CA_SERVER_CA_NAME=ca.org2.example.com
-            - FABRIC_CA_SERVER_TLS_ENABLED=true
-            - FABRIC_CA_SERVER_TLS_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.org2.example.com-cert.pem
-            - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/1de4a00d8c7d8b1b05b8f5932a175467fb70b68d4c143ea630696756ca969dbc_sk
-            - FABRIC_CA_SERVER_PORT=7054
-        extra_hosts:
-            - "peer0.org1.example.com:${IP_SERVER_1}"
-            - "peer1.org1.example.com:${IP_SERVER_1}"
-            - "orderer0.org1.example.com:${IP_SERVER_1}"
-            - "orderer1.org1.example.com:${IP_SERVER_1}"
-            - "ca.org1.example.com:${IP_SERVER_1}"
-        ports:
-            - "7054:7054"
-        command: sh -c 'fabric-ca-server start -b admin:adminpw'
-        volumes:
-            - ../crypto-config/peerOrganizations/org2.example.com/ca/:/etc/hyperledger/fabric-ca-server-config
-        container_name: ca.org2.example.com
-        networks:
-           behave:
-             aliases:
-                - ${CORE_PEER_NETWORKID}
-
-
     orderer0.org2.example.com:
         extends:
             file: docker-compose-base.yaml
             service: orderer
         container_name: orderer0.org2.example.com
         environment:
-            - ORDERER_GENERAL_LOCALMSPID=Orderer2MSP
+            - ORDERER_GENERAL_LOCALMSPID=OrdererOrg2MSP
         extra_hosts:
             - "peer0.org1.example.com:${IP_SERVER_1}"
             - "peer1.org1.example.com:${IP_SERVER_1}"
             - "orderer0.org1.example.com:${IP_SERVER_1}"
             - "orderer1.org1.example.com:${IP_SERVER_1}"
-            - "ca.org1.example.com:${IP_SERVER_1}"
         volumes:
             - ../crypto-config/ordererOrganizations/org2.example.com/orderers/orderer0.org2.example.com/msp:/var/hyperledger/orderer/msp
             - ../crypto-config/ordererOrganizations/org2.example.com/orderers/orderer0.org2.example.com/tls:/var/hyperledger/orderer/tls
@@ -68,13 +40,12 @@ services:
             service: orderer
         container_name: orderer1.org2.example.com
         environment:
-            - ORDERER_GENERAL_LOCALMSPID=Orderer2MSP
+            - ORDERER_GENERAL_LOCALMSPID=OrdererOrg2MSP
         extra_hosts:
             - "peer0.org1.example.com:${IP_SERVER_1}"
             - "peer1.org1.example.com:${IP_SERVER_1}"
             - "orderer0.org1.example.com:${IP_SERVER_1}"
             - "orderer1.org1.example.com:${IP_SERVER_1}"
-            - "ca.org1.example.com:${IP_SERVER_1}"
         volumes:
             - ../crypto-config/ordererOrganizations/org2.example.com/orderers/orderer1.org2.example.com/msp:/var/hyperledger/orderer/msp
             - ../crypto-config/ordererOrganizations/org2.example.com/orderers/orderer1.org2.example.com/tls:/var/hyperledger/orderer/tls

@@ -38,7 +38,6 @@ services:
         extra_hosts:
             - "orderer0.org1.example.com:${IP_SERVER_1}"
             - "orderer1.org1.example.com:${IP_SERVER_1}"
-            - "ca.org1.example.com:${IP_SERVER_1}"
             - "peer1.org1.example.com:${IP_SERVER_1}"
             - "peer2.org1.example.com:${IP_SERVER_1}"
         networks:
@@ -77,7 +76,6 @@ services:
         extra_hosts:
             - "orderer0.org1.example.com:${IP_SERVER_1}"
             - "orderer1.org1.example.com:${IP_SERVER_1}"
-            - "ca.org1.example.com:${IP_SERVER_1}"
             - "peer1.org1.example.com:${IP_SERVER_1}"
             - "peer2.org1.example.com:${IP_SERVER_1}"
         networks:
