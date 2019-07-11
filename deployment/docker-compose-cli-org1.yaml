@@ -24,13 +24,13 @@ services:
     extra_hosts:
       - "peer0.org2.example.com:${IP_SERVER_2}"
       - "peer1.org2.example.com:${IP_SERVER_2}"
-      - "orderer0.org2.example.com:${IP_SERVER_2}"
-      - "orderer1.org2.example.com:${IP_SERVER_2}"
+      - "orderer0.ordererOrg2.example.com:${IP_SERVER_2}"
+      - "orderer1.ordererOrg2.example.com:${IP_SERVER_2}"
     working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
       - "peer0.org1.example.com"
       - "peer1.org1.example.com"
-      - "orderer0.org1.example.com"
-      - "orderer1.org1.example.com"
+      - "orderer0.ordererOrg1.example.com"
+      - "orderer1.ordererOrg1.example.com"
     command: /bin/bash
     volumes:
         - /var/run/:/host/var/run/

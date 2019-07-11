@@ -6,27 +6,27 @@ networks:
     behave:
 
 volumes:
-  orderer0.org2.example.com:
-  orderer1.org2.example.com:
+  orderer0.ordererOrg2.example.com:
+  orderer1.ordererOrg2.example.com:
 
 services:
-    orderer0.org2.example.com:
+    orderer0.ordererOrg2.example.com:
         extends:
             file: docker-compose-base.yaml
             service: orderer
-        container_name: orderer0.org2.example.com
+        container_name: orderer0.ordererOrg2.example.com
         environment:
             - ORDERER_GENERAL_LOCALMSPID=OrdererOrg2MSP
         extra_hosts:
             - "peer0.org1.example.com:${IP_SERVER_1}"
             - "peer1.org1.example.com:${IP_SERVER_1}"
-            - "orderer0.org1.example.com:${IP_SERVER_1}"
-            - "orderer1.org1.example.com:${IP_SERVER_1}"
+            - "orderer0.ordererOrg1.example.com:${IP_SERVER_1}"
+            - "orderer1.ordererOrg1.example.com:${IP_SERVER_1}"
         volumes:
-            - ../crypto-config/ordererOrganizations/org2.example.com/orderers/orderer0.org2.example.com/msp:/var/hyperledger/orderer/msp
-            - ../crypto-config/ordererOrganizations/org2.example.com/orderers/orderer0.org2.example.com/tls:/var/hyperledger/orderer/tls
+            - ../crypto-config/ordererOrganizations/ordererOrg2.example.com/orderers/orderer0.ordererOrg2.example.com/msp:/var/hyperledger/orderer/msp
+            - ../crypto-config/ordererOrganizations/ordererOrg2.example.com/orderers/orderer0.ordererOrg2.example.com/tls:/var/hyperledger/orderer/tls
             - ../network-config/:/var/hyperledger/configs
-            - orderer0.org2.example.com:/var/hyperledger/production/orderer
+            - orderer0.ordererOrg2.example.com:/var/hyperledger/production/orderer
         networks:
           behave:
              aliases:
@@ -34,23 +34,23 @@ services:
         ports:
           - 7050:7050
 
-    orderer1.org2.example.com:
+    orderer1.ordererOrg2.example.com:
         extends:
             file: docker-compose-base.yaml
             service: orderer
-        container_name: orderer1.org2.example.com
+        container_name: orderer1.ordererOrg2.example.com
         environment:
             - ORDERER_GENERAL_LOCALMSPID=OrdererOrg2MSP
         extra_hosts:
             - "peer0.org1.example.com:${IP_SERVER_1}"
             - "peer1.org1.example.com:${IP_SERVER_1}"
-            - "orderer0.org1.example.com:${IP_SERVER_1}"
-            - "orderer1.org1.example.com:${IP_SERVER_1}"
+            - "orderer0.ordererOrg1.example.com:${IP_SERVER_1}"
+            - "orderer1.ordererOrg1.example.com:${IP_SERVER_1}"
         volumes:
-            - ../crypto-config/ordererOrganizations/org2.example.com/orderers/orderer1.org2.example.com/msp:/var/hyperledger/orderer/msp
-            - ../crypto-config/ordererOrganizations/org2.example.com/orderers/orderer1.org2.example.com/tls:/var/hyperledger/orderer/tls
+            - ../crypto-config/ordererOrganizations/ordererOrg2.example.com/orderers/orderer1.ordererOrg2.example.com/msp:/var/hyperledger/orderer/msp
+            - ../crypto-config/ordererOrganizations/ordererOrg2.example.com/orderers/orderer1.ordererOrg2.example.com/tls:/var/hyperledger/orderer/tls
             - ../network-config/:/var/hyperledger/configs
-            - orderer1.org2.example.com:/var/hyperledger/production/orderer
+            - orderer1.ordererOrg2.example.com:/var/hyperledger/production/orderer
         networks:
           behave:
              aliases:
