@@ -16,6 +16,7 @@ services:
             service: orderer
         container_name: orderer0.ordererOrg2.example.com
         environment:
+            - ORDERER_HOST=orderer0.ordererOrg2.example.com
             - ORDERER_GENERAL_LOCALMSPID=OrdererOrg2MSP
         extra_hosts:
             - "peer0.org1.example.com:${IP_SERVER_1}"
@@ -40,6 +41,7 @@ services:
             service: orderer
         container_name: orderer1.ordererOrg2.example.com
         environment:
+            - ORDERER_HOST=orderer1.ordererOrg2.example.com
             - ORDERER_GENERAL_LOCALMSPID=OrdererOrg2MSP
         extra_hosts:
             - "peer0.org1.example.com:${IP_SERVER_1}"
