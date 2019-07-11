@@ -1,13 +1,15 @@
 # Configuration for Peer 0 & Peer1 of Org1
 
-version: '2'
+version: '3'
 
 volumes:
     peer0.org1.example.com:
     peer1.org1.example.com:
 
 networks:
-    behave:
+    net:
+      external:
+        name: net
 
 services:
     peer0.org1.example.com:
@@ -35,15 +37,18 @@ services:
             - ../crypto-config/peerOrganizations/org1.example.com/users:/var/hyperledger/users
             - ../network-config/:/var/hyperledger/configs
             - peer0.org1.example.com:/var/hyperledger/production
-        extra_hosts:
-            - "orderer0.ordererOrg2.example.com:${IP_SERVER_2}"
-            - "orderer1.ordererOrg2.example.com:${IP_SERVER_2}"
-            - "peer1.org2.example.com:${IP_SERVER_2}"
-            - "peer2.org2.example.com:${IP_SERVER_2}"
+        deploy:
+          mode: replicated
+          replicas: 1
+          restart_policy:
+              condition: on-failure
+          placement:
+                constraints:
+                  - node.hostname == ${IP_SERVER_1}
         networks:
-          behave:
+          net:
              aliases:
-               - ${CORE_PEER_NETWORKID}
+               - peer0.org1.example.com
         ports:
           - 7051:7051
           - 7053:7053
@@ -73,15 +78,18 @@ services:
             - ../crypto-config/peerOrganizations/org1.example.com/users:/var/hyperledger/users
             - ../network-config/:/var/hyperledger/configs
             - peer1.org1.example.com:/var/hyperledger/production
-        extra_hosts:
-            - "orderer0.ordererOrg2.example.com:${IP_SERVER_2}"
-            - "orderer1.ordererOrg2.example.com:${IP_SERVER_2}"
-            - "peer1.org2.example.com:${IP_SERVER_2}"
-            - "peer2.org2.example.com:${IP_SERVER_2}"
+        deploy:
+            mode: replicated
+            replicas: 1
+            restart_policy:
+              condition: on-failure
+            placement:
+                constraints:
+                    - node.hostname == ${IP_SERVER_1}
         networks:
-          behave:
+          net:
              aliases:
-               - ${CORE_PEER_NETWORKID}
+               - peer1.org1.example.com
         ports:
           - 8051:8051
           - 8053:8053

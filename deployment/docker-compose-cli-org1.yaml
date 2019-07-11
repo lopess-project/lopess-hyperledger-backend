@@ -1,7 +1,7 @@
-version: '2'
+version: '3'
 
 networks:
-    behave:
+    net:
 
 services:
   cli:
@@ -21,11 +21,6 @@ services:
       - CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp
       - CORE_CHAINCODE_KEEPALIVE=10
       - FABRIC_LOGGING_SPEC=DEBUG
-    extra_hosts:
-      - "peer0.org2.example.com:${IP_SERVER_2}"
-      - "peer1.org2.example.com:${IP_SERVER_2}"
-      - "orderer0.ordererOrg2.example.com:${IP_SERVER_2}"
-      - "orderer1.ordererOrg2.example.com:${IP_SERVER_2}"
     working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
     command: /bin/bash
     volumes:
@@ -35,5 +30,13 @@ services:
         - $GOPATH/src/golang.org/x/crypto/ed25519/:/opt/gopath/src/golang.org/x/crypto/ed25519/
         - ../crypto-config:/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/
         - ../network-config:/opt/gopath/src/github.com/hyperledger/fabric/peer/network-config
+    deploy:
+      mode: replicated
+      replicas: 1
+      restart_policy:
+          condition: on-failure
+      placement:
+            constraints:
+              - node.hostname == ${IP_SERVER_1}
     networks:
-        - behave
+        - net

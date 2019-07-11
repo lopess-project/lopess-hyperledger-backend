@@ -1,13 +1,15 @@
 # Configuration for Orderer Nodes of Org1
 
-version: '2'
+version: '3'
 
 volumes:
   orderer0.ordererOrg1.example.com:
   orderer1.ordererOrg1.example.com:
 
 networks:
-    behave:
+    net:
+      external:
+        name: net
 
 services:
     orderer0.ordererOrg1.example.com:
@@ -18,20 +20,23 @@ services:
         environment:
             - ORDERER_HOST=orderer0.ordererOrg1.example.com
             - ORDERER_GENERAL_LOCALMSPID=OrdererOrg1MSP
-        extra_hosts:
-            - "peer0.org2.example.com:${IP_SERVER_2}"
-            - "peer1.org2.example.com:${IP_SERVER_2}"
-            - "orderer0.ordererOrg2.example.com:${IP_SERVER_2}"
-            - "orderer1.ordererOrg2.example.com:${IP_SERVER_2}"
         volumes:
             - ../crypto-config/ordererOrganizations/ordererOrg1.example.com/orderers/orderer0.ordererOrg1.example.com/msp:/var/hyperledger/orderer/msp
             - ../crypto-config/ordererOrganizations/ordererOrg1.example.com/orderers/orderer0.ordererOrg1.example.com/tls:/var/hyperledger/orderer/tls
             - ../network-config/:/var/hyperledger/configs
             - orderer0.ordererOrg1.example.com:/var/hyperledger/production/orderer
+        deploy:
+          mode: replicated
+          replicas: 1
+          restart_policy:
+              condition: on-failure
+          placement:
+                constraints:
+                  - node.hostname == ${IP_SERVER_1}
         networks:
-          behave:
+          net:
              aliases:
-               - ${CORE_PEER_NETWORKID}
+               - orderer0.ordererOrg1.example.com
         ports:
           - 7050:7050
 
@@ -43,19 +48,22 @@ services:
         environment:
             - ORDERER_HOST=orderer1.ordererOrg1.example.com
             - ORDERER_GENERAL_LOCALMSPID=OrdererOrg1MSP
-        extra_hosts:
-            - "peer0.org2.example.com:${IP_SERVER_2}"
-            - "peer1.org2.example.com:${IP_SERVER_2}"
-            - "orderer0.ordererOrg2.example.com:${IP_SERVER_2}"
-            - "orderer1.ordererOrg2.example.com:${IP_SERVER_2}"
         volumes:
             - ../crypto-config/ordererOrganizations/ordererOrg1.example.com/orderers/orderer1.ordererOrg1.example.com/msp:/var/hyperledger/orderer/msp
             - ../crypto-config/ordererOrganizations/ordererOrg1.example.com/orderers/orderer1.ordererOrg1.example.com/tls:/var/hyperledger/orderer/tls
             - ../network-config/:/var/hyperledger/configs
             - orderer1.ordererOrg1.example.com:/var/hyperledger/production/orderer
+        deploy:
+          mode: replicated
+          replicas: 1
+          restart_policy:
+              condition: on-failure
+          placement:
+                constraints:
+                  - node.hostname == ${IP_SERVER_1}
         networks:
-          behave:
+          net:
              aliases:
-               - ${CORE_PEER_NETWORKID}
+               - orderer1.ordererOrg1.example.com
         ports:
           - 8050:7050
