@@ -27,10 +27,6 @@ services:
       - "orderer0.ordererOrg2.example.com:${IP_SERVER_2}"
       - "orderer1.ordererOrg2.example.com:${IP_SERVER_2}"
     working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
-      - "peer0.org1.example.com"
-      - "peer1.org1.example.com"
-      - "orderer0.ordererOrg1.example.com"
-      - "orderer1.ordererOrg1.example.com"
     command: /bin/bash
     volumes:
         - /var/run/:/host/var/run/

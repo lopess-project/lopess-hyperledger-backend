@@ -7,16 +7,18 @@ OrdererOrgs:
   # ---------------------------------------------------------------------------
   - Name: OrdererOrg1
     Domain: ordererOrg1.example.com
-    Specs:
-      - Hostname: orderer0
-      - Hostname: orderer1
+    Template:
+      Count: 2
+      SANS:
+        - "192.168.131.157"
 
 
   - Name: OrdererOrg2
     Domain: ordererOrg2.example.com
-    Specs:
-      - Hostname: orderer0
-      - Hostname: orderer1
+    Template:
+      Count: 2
+      SANS:
+        - "192.168.131.158"
 
 
 
@@ -66,6 +68,8 @@ PeerOrgs:
     # ---------------------------------------------------------------------------
     Template:
       Count: 2
+      SANS:
+        - "192.168.131.157"
 
       # Start: 5
       # Hostname: {{.Prefix}}{{.Index}} # default
@@ -84,5 +88,7 @@ PeerOrgs:
     EnableNodeOUs: true
     Template:
       Count: 2
+      SANS:
+        - "192.168.131.158"
     Users:
       Count: 1
