@@ -13,11 +13,28 @@ networks:
 
 services:
     peer0.org2.example.com:
-        extends:
-            file: docker-compose-base.yaml
-            service: peer
         container_name: peer0.org2.example.com
+        image: hyperledger/fabric-peer:${HLF_VERSION_TAG}
         environment:
+            - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+            - DISCOVERY_AS_LOCALHOST=false
+            - CORE_PEER_NETWORKID=${CORE_PEER_NETWORKID}
+            - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=${CORE_PEER_NETWORKID}
+            - CORE_PEER_ADDRESSAUTODETECT=true
+            - CORE_PEER_GOSSIP_ORGLEADER=false
+            - CORE_PEER_GOSSIP_USELEADERELECTION=true
+            - CORE_PEER_PROFILE_ENABLED=true
+            - CORE_PEER_MSPCONFIGPATH=/var/hyperledger/peers/msp
+            - CORE_LEDGER_STATE_STATEDATABASE=LevelDB
+            - FABRIC_LOGGING_SPEC=DEBUG
+            - CORE_LOGGING_GOSSIP=${CORE_LOGGING_GOSSIP}
+            - CORE_LOGGING_MSP=DEBUG
+            # TLS settings
+            - CORE_PEER_TLS_ENABLED=${CORE_PEER_TLS_ENABLED}
+            - CORE_PEER_TLS_CLIENTAUTHREQUIRED=${CORE_PEER_TLS_CLIENTAUTHREQUIRED}
+            - CORE_PEER_TLS_CERT_FILE=${CORE_PEER_TLS_CERT_FILE}
+            - CORE_PEER_TLS_KEY_FILE=${CORE_PEER_TLS_KEY_FILE}
+            - CORE_PEER_TLS_ROOTCERT_FILE=/var/hyperledger/peers/tls/ca.crt
             - CORE_PEER_LISTENADDRESS=0.0.0.0:7051
             - CORE_PEER_CHAINCODELISTENADDRESS=peer0.org2.example.com:7052
             - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:7052
@@ -35,6 +52,9 @@ services:
             - ../crypto-config/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/msp:/var/hyperledger/peers/msp
             - ../crypto-config/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls:/var/hyperledger/peers/tls
             - ../crypto-config/peerOrganizations/org2.example.com/users:/var/hyperledger/users
+            - /var/run/:/host/var/run/
+            - $GOPATH/src/github.com/hyperledger/fabric/:/opt/gopath/src/github.com/hyperledger/fabric/
+            - ../crypto-config/:/var/hyperledger/configs
             - ../network-config/:/var/hyperledger/configs
             - peer0.org2.example.com:/var/hyperledger/production
         deploy:
@@ -54,11 +74,28 @@ services:
           - 7053:7053
 
     peer1.org2.example.com:
-        extends:
-            file: docker-compose-base.yaml
-            service: peer
         container_name: peer1.org2.example.com
+        image: hyperledger/fabric-peer:${HLF_VERSION_TAG}
         environment:
+            - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+            - DISCOVERY_AS_LOCALHOST=false
+            - CORE_PEER_NETWORKID=${CORE_PEER_NETWORKID}
+            - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=${CORE_PEER_NETWORKID}
+            - CORE_PEER_ADDRESSAUTODETECT=true
+            - CORE_PEER_GOSSIP_ORGLEADER=false
+            - CORE_PEER_GOSSIP_USELEADERELECTION=true
+            - CORE_PEER_PROFILE_ENABLED=true
+            - CORE_PEER_MSPCONFIGPATH=/var/hyperledger/peers/msp
+            - CORE_LEDGER_STATE_STATEDATABASE=LevelDB
+            - FABRIC_LOGGING_SPEC=DEBUG
+            - CORE_LOGGING_GOSSIP=${CORE_LOGGING_GOSSIP}
+            - CORE_LOGGING_MSP=DEBUG
+            # TLS settings
+            - CORE_PEER_TLS_ENABLED=${CORE_PEER_TLS_ENABLED}
+            - CORE_PEER_TLS_CLIENTAUTHREQUIRED=${CORE_PEER_TLS_CLIENTAUTHREQUIRED}
+            - CORE_PEER_TLS_CERT_FILE=${CORE_PEER_TLS_CERT_FILE}
+            - CORE_PEER_TLS_KEY_FILE=${CORE_PEER_TLS_KEY_FILE}
+            - CORE_PEER_TLS_ROOTCERT_FILE=/var/hyperledger/peers/tls/ca.crt
             - CORE_PEER_LISTENADDRESS=0.0.0.0:8051
             - CORE_PEER_CHAINCODELISTENADDRESS=peer1.org2.example.com:8052
             - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:7052
@@ -76,6 +113,9 @@ services:
             - ../crypto-config/peerOrganizations/org2.example.com/peers/peer1.org2.example.com/msp:/var/hyperledger/peers/msp
             - ../crypto-config/peerOrganizations/org2.example.com/peers/peer1.org2.example.com/tls:/var/hyperledger/peers/tls
             - ../crypto-config/peerOrganizations/org2.example.com/users:/var/hyperledger/users
+            - /var/run/:/host/var/run/
+            - $GOPATH/src/github.com/hyperledger/fabric/:/opt/gopath/src/github.com/hyperledger/fabric/
+            - ../crypto-config/:/var/hyperledger/configs
             - ../network-config/:/var/hyperledger/configs
             - peer1.org2.example.com:/var/hyperledger/production
         deploy:
