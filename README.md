@@ -63,7 +63,7 @@ Afterwards check on each machine if the containers are up and running. If so, th
 * Host 1:
 
 `$ docker exec -it cli bash`
-`$ peer channel create -o orderer0.example.com:7050 -c scka-channel -f ./network-config/channel.tx --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer0.example.com/msp/tlscacerts/tlsca.example.com-cert.pem`
+`$ peer channel create -o orderer0.ordererOrg1.example.com:7050 -c scka-channel -f ./network-config/channel.tx --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/ordererOrg1.example.com/orderers/orderer0.ordererOrg1.example.com/msp/tlscacerts/tlsca.ordererOrg1.example.com-cert.pem`
 `$ peer channel join -b scka-channel.block`
 
 The second command will output a channel config block named scka-channel.block , which needs to be send to the other peers in order to join the networks. 
@@ -96,12 +96,12 @@ Join peer1 from org2:
 
 * Host 1
 
-`$ peer channel update -o orderer0.example.com:7050 -c scka-channel -f ./network-config/Org1MSPanchors.tx --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer0.example.com/msp/tlscacerts/tlsca.example.com-cert.pem`
+`$ peer channel update -o orderer0.ordererOrg1.example.com:7050 -c scka-channel -f ./network-config/Org1MSPanchors.tx --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/ordererOrg1.example.com/orderers/orderer0.ordererOrg1.example.com/msp/tlscacerts/tlsca.ordererOrg1.example.com-cert.pem`
 
 
 * Host 2
 
-`$ peer channel update -o orderer2.example.com:7050 -c scka-channel -f ./network-config/Org2MSPanchors.tx --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer2.example.com/msp/tlscacerts/tlsca.example.com-cert.pem`
+`$ peer channel update -o orderer0.ordererOrg2.example.com:7050 -c scka-channel -f ./network-config/Org2MSPanchors.tx --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/ordererOrg2.example.com/orderers/orderer0.ordererOrg2.example.com/msp/tlscacerts/tlsca.ordererOrg2.example.com-cert.pem`
 
 # Install and instantiate chaincode
 
@@ -123,7 +123,7 @@ Now that the chaincode is installed on every node, we need to instantiate it onc
 
 * Host 1
 
-`$ peer chaincode instantiate -o orderer0.example.com:7050 --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer0.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C scka-channel -n mycc -v 1.0 -c '{"Args":[]}' -P "AND ('Org1MSP.peer','Org2MSP.peer')" --peerAddresses peer0.org1.example.com:7051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt`
+`$ peer chaincode instantiate -o orderer0.ordererOrg1.example.com:7050 --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/ordererOrg1.example.com/orderers/orderer0.ordererOrg1.example.com/msp/tlscacerts/tlsca.ordererOrg1.example.com-cert.pem -C scka-channel -n mycc -v 1.0 -c '{"Args":[]}' -P "AND ('Org1MSP.peer','Org2MSP.peer')" --peerAddresses peer0.org1.example.com:7051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt`
 
 The last part defines the endorsing policy of the channel, which means a transaction needs to be endorsed by at least one peer of org1 AND one peer of org2. When this is done, we can invoke and query transactions.
 
@@ -135,8 +135,8 @@ The last part defines the endorsing policy of the channel, which means a transac
 
 * Host 1
 
-`$ peer chaincode invoke -o orderer0.example.com:7050 --tls true --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer0.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C scka-channel -n mycc --peerAddresses peer0.org1.example.com:7051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt --peerAddresses peer0.org2.example.com:7051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt -c '{"function":"initLedger","Args":[]}'`
-`$ peer chaincode invoke -o orderer0.example.com:7050 --tls true --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer0.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C scka-channel -n mycc --peerAddresses peer0.org1.example.com:7051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt --peerAddresses peer0.org2.example.com:7051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt -c '{"function":"registerMeasurement","Args":["qgABgBdIASFwckjEYBKIoVQxPzYAKwBUuZyFoRG+NuvdDpziAN5UWmwfCBPa+JrY94NFEG+4K4/624uP3jNrEOxFjYxTlYoNVyboJqE09i46tMP2LLMJAA=="]}'`
+`$ peer chaincode invoke -o orderer0.ordererOrg1.example.com:7050 --tls true --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/ordererOrg1.example.com/orderers/orderer0.ordererOrg1.example.com/msp/tlscacerts/tlsca.ordererOrg1.example.com-cert.pem -C scka-channel -n mycc --peerAddresses peer0.org1.example.com:7051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt --peerAddresses peer0.org2.example.com:7051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt -c '{"function":"initLedger","Args":[]}'`
+`$ peer chaincode invoke -o orderer0.ordererOrg1.example.com:7050 --tls true --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/ordererOrg1.example.com/orderers/orderer0.ordererOrg1.example.com/msp/tlscacerts/tlsca.ordererOrg1.example.com-cert.pem -C scka-channel -n mycc --peerAddresses peer0.org1.example.com:7051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt --peerAddresses peer0.org2.example.com:7051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt -c '{"function":"registerMeasurement","Args":["qgABgBdIASFwckjEYBKIoVQxPzYAKwBUuZyFoRG+NuvdDpziAN5UWmwfCBPa+JrY94NFEG+4K4/624uP3jNrEOxFjYxTlYoNVyboJqE09i46tMP2LLMJAA=="]}'`
 
 * Host 2
 
