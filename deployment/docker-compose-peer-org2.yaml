@@ -31,13 +31,12 @@ services:
             - CORE_PEER_TLS_CERT_FILE=/var/hyperledger/peers/tls/server.crt
             - CORE_PEER_TLS_KEY_FILE=/var/hyperledger/peers/tls/server.key
             - CORE_PEER_TLS_ROOTCERT_FILE=/var/hyperledger/peers/tls/ca.crt
-            - CORE_PEER_LISTENADDRESS=0.0.0.0:7051
-            - CORE_PEER_CHAINCODELISTENADDRESS=peer0.org2.example.com:7052
-            - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:7052
+            - CORE_PEER_LISTENADDRESS=0.0.0.0:9051
+            - CORE_PEER_CHAINCODELISTENADDRESS=peer0.org2.example.com:9052
             - CORE_PEER_ID=peer0.org2.example.com
-            - CORE_PEER_ADDRESS=peer0.org2.example.com:7051
-            - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.org2.example.com:7051
-            - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org2.example.com:7051
+            - CORE_PEER_ADDRESS=peer0.org2.example.com:9051
+            - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.org2.example.com:9051
+            - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org2.example.com:9051
             - CORE_PEER_GOSSIP_ORGLEADER=false
             - CORE_PEER_GOSSIP_USELEADERELECTION=true
             - CORE_PEER_LOCALMSPID=Org2MSP
@@ -64,8 +63,7 @@ services:
              aliases:
                - peer0.org2.example.com
         ports:
-          - 7051:7051
-          - 7053:7053
+          - 9051:9051
 
     peer1_org2_example_com:
         hostname: peer1.org2.example.com
@@ -85,13 +83,12 @@ services:
             - CORE_PEER_TLS_CERT_FILE=/var/hyperledger/peers/tls/server.crt
             - CORE_PEER_TLS_KEY_FILE=/var/hyperledger/peers/tls/server.key
             - CORE_PEER_TLS_ROOTCERT_FILE=/var/hyperledger/peers/tls/ca.crt
-            - CORE_PEER_LISTENADDRESS=0.0.0.0:8051
-            - CORE_PEER_CHAINCODELISTENADDRESS=peer1.org2.example.com:8052
-            - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:7052
+            - CORE_PEER_LISTENADDRESS=0.0.0.0:10051
+            - CORE_PEER_CHAINCODELISTENADDRESS=peer1.org2.example.com:10052
             - CORE_PEER_ID=peer1.org2.example.com
-            - CORE_PEER_ADDRESS=peer1.org2.example.com:8051
-            - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.org2.example.com:7051
-            - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1.org2.example.com:8051
+            - CORE_PEER_ADDRESS=peer1.org2.example.com:10051
+            - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.org2.example.com:9051
+            - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1.org2.example.com:10051
             - CORE_PEER_GOSSIP_ORGLEADER=false
             - CORE_PEER_GOSSIP_USELEADERELECTION=true
             - CORE_PEER_LOCALMSPID=Org2MSP
@@ -118,5 +115,4 @@ services:
              aliases:
                - peer1.org2.example.com
         ports:
-          - 8051:8051
-          - 8053:8053
+          - 10051:10051
