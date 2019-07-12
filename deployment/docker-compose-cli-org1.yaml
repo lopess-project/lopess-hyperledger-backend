@@ -33,6 +33,15 @@ services:
         - /home/maurice/goproject/src/golang.org/x/crypto/ed25519/:/opt/gopath/src/golang.org/x/crypto/ed25519/
         - ../crypto-config:/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/
         - ../network-config:/opt/gopath/src/github.com/hyperledger/fabric/peer/network-config
+    depends_on:
+      - orderer0.ordererOrg1.example.com
+      - orderer1.ordererOrg1.example.com
+      - orderer0.ordererOrg2.example.com
+      - orderer1.ordererOrg2.example.com
+      - peer0.org1.example.com
+      - peer1.org1.example.com
+      - peer0.org2.example.com
+      - peer1.org2.example.com
     deploy:
       mode: replicated
       replicas: 1

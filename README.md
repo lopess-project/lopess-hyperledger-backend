@@ -31,6 +31,7 @@ This project contains configuration files and runnables in order to create a net
 
 *  2 OrdererNodes
 *  2 PeerNodes
+*  1 CA
 *  1 CLI
 
 Note: The installation will only work with images newer > v1.4.1 since raft is utilied as consensus algorithm. All required crypto material and channel config files have been generated beforehand and only need to be adapted when necessary.
@@ -74,7 +75,7 @@ To send this block to the peer on the same host, simply change environment varia
 
 Now the channel block needs to be transfered to host 2. Therefore first copy it from your docker volume to your local machine:
 
-`$ docker cp peer0.org1.example.com:/opt/gopath/src/github.com/hyperledger/fabric/peer/scka-channel.block . `
+`$ docker cp <peer0 org1 container name>:/opt/gopath/src/github.com/hyperledger/fabric/peer/scka-channel.block . `
 
 From there transfer it to the second host via scp:
 
@@ -84,7 +85,7 @@ From there transfer it to the second host via scp:
 
 Join peer0 from org2:
 
-`$ docker cp scka-channel.block peer0.org2.example.com:/opt/gopath/src/github.com/hyperledger/fabric/peer/scka-channel.block`
+`$ docker cp scka-channel.block <peer0 org2 container name>:/opt/gopath/src/github.com/hyperledger/fabric/peer/scka-channel.block`
 `$ docker exec -it <cli_org2_containername>  bash`
 `$ peer channel join -b scka-channel.block`
 
@@ -112,12 +113,12 @@ Install the chaincode on every peer of every org/host. Therefore proceed similar
 When the cli was closed and reentered, proceed as follows. Otherwise do it the otherway round and change peer0 und peer1 accordingly.
 
 `$ peer chaincode install -n mycc -v 1.0 -p github.com/chaincode`
-`$ CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp CORE_PEER_ADDRESS=peer1.org1.example.com:8051 CORE_PEER_LOCALMSPID="Org1MSP" CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer1.org1.example.com/tls/ca.crt peer chaincode install -n mycc -v 1.0 -p github.com/chaincode`
+`$ CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp CORE_PEER_ADDRESS=peer1.org1.example.com:7051 CORE_PEER_LOCALMSPID="Org1MSP" CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer1.org1.example.com/tls/ca.crt peer chaincode install -n mycc -v 1.0 -p github.com/chaincode`
 
 * Host 2
 
 `$ peer chaincode install -n mycc -v 1.0 -p github.com/chaincode`
-`$ CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp CORE_PEER_ADDRESS=peer1.org2.example.com:10051 CORE_PEER_LOCALMSPID="Org2MSP" CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/peers/peer1.org2.example.com/tls/ca.crt peer chaincode install -n mycc -v 1.0 -p github.com/chaincode`
+`$ CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp CORE_PEER_ADDRESS=peer1.org2.example.com:7051 CORE_PEER_LOCALMSPID="Org2MSP" CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/peers/peer1.org2.example.com/tls/ca.crt peer chaincode install -n mycc -v 1.0 -p github.com/chaincode`
 
 Now that the chaincode is installed on every node, we need to instantiate it once. See below.
 
@@ -135,8 +136,8 @@ The last part defines the endorsing policy of the channel, which means a transac
 
 * Host 1
 
-`$ peer chaincode invoke -o orderer0.ordererOrg1.example.com:7050 --tls true --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/ordererOrg1.example.com/orderers/orderer0.ordererOrg1.example.com/msp/tlscacerts/tlsca.ordererOrg1.example.com-cert.pem -C scka-channel -n mycc --peerAddresses peer0.org1.example.com:7051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt --peerAddresses peer0.org2.example.com:9051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt -c '{"function":"initLedger","Args":[]}'`
-`$ peer chaincode invoke -o orderer0.ordererOrg1.example.com:7050 --tls true --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/ordererOrg1.example.com/orderers/orderer0.ordererOrg1.example.com/msp/tlscacerts/tlsca.ordererOrg1.example.com-cert.pem -C scka-channel -n mycc --peerAddresses peer0.org1.example.com:7051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt --peerAddresses peer0.org2.example.com:9051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt -c '{"function":"registerMeasurement","Args":["qgABoAFwhAQ+AVjJqBFIAIQAAtcAOACmAq4AMDYwMDE1MDQ5MDA1OTU2ME4wMDA4MjU1MTY2MEU=","3xRcKIUbrdehGRbcZOWfFd01z6n6yge3Zsnl9J/L2plU2HiAhAw2RQdG91nmEYsvN005oyf1wy1PaRH09v4oAQ=="]}'`
+`$ peer chaincode invoke -o orderer0.ordererOrg1.example.com:7050 --tls true --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/ordererOrg1.example.com/orderers/orderer0.ordererOrg1.example.com/msp/tlscacerts/tlsca.ordererOrg1.example.com-cert.pem -C scka-channel -n mycc --peerAddresses peer0.org1.example.com:7051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt --peerAddresses peer0.org2.example.com:7051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt -c '{"function":"initLedger","Args":[]}'`
+`$ peer chaincode invoke -o orderer0.ordererOrg1.example.com:7050 --tls true --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/ordererOrg1.example.com/orderers/orderer0.ordererOrg1.example.com/msp/tlscacerts/tlsca.ordererOrg1.example.com-cert.pem -C scka-channel -n mycc --peerAddresses peer0.org1.example.com:7051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt --peerAddresses peer0.org2.example.com:7051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt -c '{"function":"registerMeasurement","Args":["qgABoAFwhAQ+AVjJqBFIAIQAAtcAOACmAq4AMDYwMDE1MDQ5MDA1OTU2ME4wMDA4MjU1MTY2MEU=","3xRcKIUbrdehGRbcZOWfFd01z6n6yge3Zsnl9J/L2plU2HiAhAw2RQdG91nmEYsvN005oyf1wy1PaRH09v4oAQ=="]}'`
 
 * Host 2
 
