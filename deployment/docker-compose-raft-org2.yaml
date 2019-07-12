@@ -13,7 +13,7 @@ volumes:
 
 services:
     orderer0_ordererOrg2_example_com:
-        container_name: orderer0.ordererOrg2.example.com
+        hostname: orderer0.ordererOrg2.example.com
         image: hyperledger/fabric-orderer:1.4.1
         environment:
             - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
@@ -56,10 +56,10 @@ services:
              aliases:
                - orderer0.ordererOrg2.example.com
         ports:
-          - 7050:7050
+          - 9050:7050
 
     orderer1.ordererOrg2.example.com:
-        container_name: orderer1.ordererOrg2.example.com
+        hostname: orderer1.ordererOrg2.example.com
         image: hyperledger/fabric-orderer:1.4.1
         environment:
             - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
@@ -102,4 +102,4 @@ services:
              aliases:
                - orderer1.ordererOrg2.example.com
         ports:
-          - 8050:7050
+          - 10050:7050
