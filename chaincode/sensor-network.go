@@ -98,6 +98,8 @@ func (s *SmartContract) Invoke(APIstub shim.ChaincodeStubInterface) sc.Response 
 		return s.initLedger(APIstub)
 	} else if function == "getDeviceRecords" {
 		return s.getDeviceRecords(APIstub)
+	} else if function == "getAllRecords" {
+		return s.getAllRecords(APIstub)
 	}
 	return shim.Error("Invalid Smart Contract function name.")
 }
@@ -114,7 +116,7 @@ func (s *SmartContract) initLedger(APIstub shim.ChaincodeStubInterface) sc.Respo
 	for i < len(devices) {
 		fmt.Println("i is ", i)
 		deviceAsBytes, _ := json.Marshal(devices[i])
-		deviceIdAsString := "Device" + strconv.Itoa(i+1)
+		deviceIdAsString := "DEVICE" + strconv.Itoa(i+1)
 		APIstub.PutState(deviceIdAsString, deviceAsBytes)
 		fmt.Println("Added", devices[i])
 		i = i + 1
@@ -127,8 +129,8 @@ func (s *SmartContract) registerDevice(APIstub shim.ChaincodeStubInterface, args
 		return shim.Error("Incorrect number of arguments. Expecting 4")
 	}
 
-	startKey := "Device1"
-	endKey := "Device9999"
+	startKey := "DEVICE1"
+	endKey := "DEVICE9999"
 
 	resultsIterator, err := APIstub.GetStateByRange(startKey, endKey)
 
@@ -141,11 +143,12 @@ func (s *SmartContract) registerDevice(APIstub shim.ChaincodeStubInterface, args
 		resultsIterator.Next()
 		i = i + 1
 	}
-	vflag, err := strconv.ParseBool(args[2])
+	vflag, err := strconv.ParseBool(args[3])
+	scheme, err := strconv.Atoi(args[1])
 
-	var data = DeviceInfo{PublicKey: args[0], Owner: args[1], ValidationFlag: vflag}
+	var data = DeviceInfo{PublicKey: args[0], EncodingScheme: scheme, Owner: args[2], ValidationFlag: vflag}
 	dataAsBytes, _ := json.Marshal(data)
-	APIstub.PutState("Device%s"+strconv.Itoa(i), dataAsBytes)
+	APIstub.PutState("DEVICE%s"+strconv.Itoa(i), dataAsBytes)
 
 	return shim.Success(nil)
 }
@@ -154,7 +157,7 @@ func (s *SmartContract) revokeDevice(APIstub shim.ChaincodeStubInterface, args [
 	if len(args) != 1 {
 		return shim.Error("Incorrect number of arguments. Expecting 2")
 	}
-	id := "Device%s" + args[0]
+	id := "DEVICE%s" + args[0]
 	deviceAsBytes, _ := APIstub.GetState(id)
 	device := DeviceInfo{}
 	json.Unmarshal(deviceAsBytes, &device)
@@ -188,12 +191,12 @@ func (s *SmartContract) registerMeasurement(APIstub shim.ChaincodeStubInterface,
 	}
 	// get decoding scheme from device Id and decode accordingly
 	deviceId := binary.BigEndian.Uint16(b[1:3])
-	deviceIdAsString := "Device" + strconv.Itoa(int(deviceId))
+	deviceIdAsString := "DEVICE" + strconv.Itoa(int(deviceId))
 	deviceAsBytes, _ := APIstub.GetState(deviceIdAsString)
 	device := DeviceInfo{}
 	json.Unmarshal(deviceAsBytes, &device)
 	if device.ValidationFlag == false {
-		return shim.Error("Device has been revoked. Transaction aborted.")
+		return shim.Error("Device has been revoked. Transaction aborted. DeviceId was "+deviceIdAsString)
 	} else {
 		data := SensorData{}
 		txId := ""
@@ -245,7 +248,7 @@ func decodeMessageWithDefaultEncodingScheme(b, b2 []byte, device DeviceInfo, dev
 	}
 	uuid := []byte(b[3:19])
 	txId := hex.EncodeToString(uuid)
-	deviceIdStr := "Device" + strconv.Itoa(int(deviceId))
+	deviceIdStr := "DEVICE" + strconv.Itoa(int(deviceId))
 	pm10 := calculatePMValueFromBytes(b[19], b[20])
 	pm25 := calculatePMValueFromBytes(b[21], b[22])
 	humidity := calculateHumidityFromBytes(b[23], b[24])
@@ -260,6 +263,45 @@ func decodeMessageWithDefaultEncodingScheme(b, b2 []byte, device DeviceInfo, dev
 func decodeMessageWithAlternateEncodingScheme(b, b2 []byte, device DeviceInfo, deviceId uint16) (SensorData, string) {
 	//todo
 	return SensorData{}, ""
+}
+
+func (s *SmartContract) getAllRecords(APIstub shim.ChaincodeStubInterface) sc.Response {
+	resultsIterator, err := APIstub.GetStateByRange("","")
+	if err != nil {
+		return shim.Error(err.Error())
+	}
+	defer resultsIterator.Close()
+
+	// buffer is a JSON array containing QueryResults
+	var buffer bytes.Buffer
+	buffer.WriteString("[")
+
+	bArrayMemberAlreadyWritten := false
+	for resultsIterator.HasNext() {
+		queryResponse, err := resultsIterator.Next()
+		if err != nil {
+			return shim.Error(err.Error())
+		}
+		// Add a comma before array members, suppress it for the first array member
+		if bArrayMemberAlreadyWritten == true {
+			buffer.WriteString(",")
+		}
+		buffer.WriteString("{\"Key\":")
+		buffer.WriteString("\"")
+		buffer.WriteString(queryResponse.Key)
+		buffer.WriteString("\"")
+
+		buffer.WriteString(", \"Record\":")
+		// Record is a JSON object, so we write as-is
+		buffer.WriteString(string(queryResponse.Value))
+		buffer.WriteString("}")
+		bArrayMemberAlreadyWritten = true
+	}
+	buffer.WriteString("]")
+
+	fmt.Printf("- queryAllRecords:\n%s\n", buffer.String())
+
+	return shim.Success(buffer.Bytes())
 }
 
 func (s *SmartContract) getMeasurementRecords(APIstub shim.ChaincodeStubInterface) sc.Response {
@@ -284,7 +326,7 @@ func (s *SmartContract) getMeasurementRecords(APIstub shim.ChaincodeStubInterfac
 		if bArrayMemberAlreadyWritten == true {
 			buffer.WriteString(",")
 		}
-		if strings.HasPrefix(queryResponse.Key, "Device") == false {
+		if strings.HasPrefix(queryResponse.Key, "DEVICE") == false {
 			buffer.WriteString("{\"Key\":")
 			buffer.WriteString("\"")
 			buffer.WriteString(queryResponse.Key)
@@ -306,8 +348,8 @@ func (s *SmartContract) getMeasurementRecords(APIstub shim.ChaincodeStubInterfac
 
 func (s *SmartContract) getDeviceRecords(APIstub shim.ChaincodeStubInterface) sc.Response {
 
-	startKey := "Device1"
-	endKey := "Device999"
+	startKey := "DEVICE1"
+	endKey := "DEVICE999"
 
 	resultsIterator, err := APIstub.GetStateByRange(startKey, endKey)
 	if err != nil {
@@ -329,7 +371,7 @@ func (s *SmartContract) getDeviceRecords(APIstub shim.ChaincodeStubInterface) sc
 		if bArrayMemberAlreadyWritten == true {
 			buffer.WriteString(",")
 		}
-		if strings.HasPrefix(queryResponse.Key, "Device") == true {
+		if strings.HasPrefix(queryResponse.Key, "DEVICE") == true {
 			buffer.WriteString("{\"Key\":")
 			buffer.WriteString("\"")
 			buffer.WriteString(queryResponse.Key)
