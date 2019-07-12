@@ -37,7 +37,7 @@ services:
                   - node.hostname == maurice-TERRA-PC
         hostname: ca.org2.example.com
         networks:
-          behave:
+          net:
              aliases:
                - ca.org2.example.com
     orderer0_ordererOrg2_example_com:

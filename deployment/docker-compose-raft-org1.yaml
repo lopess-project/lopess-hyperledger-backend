@@ -36,7 +36,7 @@ services:
                   - node.hostname == maurice-mobile
         hostname: ca.org1.example.com
         networks:
-          behave:
+          net:
              aliases:
                - ca.org1.example.com
 
