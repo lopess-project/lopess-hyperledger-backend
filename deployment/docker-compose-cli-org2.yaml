@@ -6,8 +6,8 @@ networks:
         name: net
 
 services:
-  cli:
-    hostname: cli
+  cli_Org2:
+    hostname: cliOrg2
     image: hyperledger/fabric-tools:1.4.1
     tty: true
     stdin_open: true

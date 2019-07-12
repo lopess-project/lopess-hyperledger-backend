@@ -6,10 +6,11 @@ networks:
         name: net
 
 services:
-  cli:
-    hostname: cli
+  cli_Org1:
+    hostname: cliOrg1
     image: hyperledger/fabric-tools:1.4.1
     tty: true
+    stdin_open: true
     environment:
       - GOPATH=/opt/gopath
       - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
@@ -28,8 +29,8 @@ services:
     volumes:
         - /var/run/:/host/var/run/
         - ../chaincode/:/opt/gopath/src/github.com/chaincode
-        - /home/maurice/gopath/src/github.com/hyperledger/fabric/:/opt/gopath/src/github.com/hyperledger/fabric/
-        - /home/maurice/gopath/src/golang.org/x/crypto/ed25519/:/opt/gopath/src/golang.org/x/crypto/ed25519/
+        - /home/maurice/goproject/src/github.com/hyperledger/fabric/:/opt/gopath/src/github.com/hyperledger/fabric/
+        - /home/maurice/goproject/src/golang.org/x/crypto/ed25519/:/opt/gopath/src/golang.org/x/crypto/ed25519/
         - ../crypto-config:/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/
         - ../network-config:/opt/gopath/src/github.com/hyperledger/fabric/peer/network-config
     deploy:
