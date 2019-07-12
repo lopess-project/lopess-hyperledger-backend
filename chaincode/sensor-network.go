@@ -114,7 +114,8 @@ func (s *SmartContract) initLedger(APIstub shim.ChaincodeStubInterface) sc.Respo
 	for i < len(devices) {
 		fmt.Println("i is ", i)
 		deviceAsBytes, _ := json.Marshal(devices[i])
-		APIstub.PutState("Device%s"+strconv.Itoa(i+1), deviceAsBytes)
+		deviceIdAsString := "Device" + strconv.Itoa(i+1)
+		APIstub.PutState(deviceIdAsString, deviceAsBytes)
 		fmt.Println("Added", devices[i])
 		i = i + 1
 	}
@@ -187,11 +188,12 @@ func (s *SmartContract) registerMeasurement(APIstub shim.ChaincodeStubInterface,
 	}
 	// get decoding scheme from device Id and decode accordingly
 	deviceId := binary.BigEndian.Uint16(b[1:3])
-	deviceAsBytes, _ := APIstub.GetState(strconv.Itoa(int(deviceId)))
+	deviceIdAsString := "Device" + strconv.Itoa(int(deviceId))
+	deviceAsBytes, _ := APIstub.GetState(deviceIdAsString)
 	device := DeviceInfo{}
 	json.Unmarshal(deviceAsBytes, &device)
 	if device.ValidationFlag == false {
-		return shim.Error("Device has been revoked. Transaction aborted")
+		return shim.Error("Device has been revoked. Transaction aborted.")
 	} else {
 		data := SensorData{}
 		txId := ""
@@ -304,7 +306,10 @@ func (s *SmartContract) getMeasurementRecords(APIstub shim.ChaincodeStubInterfac
 
 func (s *SmartContract) getDeviceRecords(APIstub shim.ChaincodeStubInterface) sc.Response {
 
-	resultsIterator, err := APIstub.GetStateByRange("", "")
+	startKey := "Device1"
+	endKey := "Device999"
+
+	resultsIterator, err := APIstub.GetStateByRange(startKey, endKey)
 	if err != nil {
 		return shim.Error(err.Error())
 	}
