@@ -106,7 +106,7 @@ func (s *SmartContract) Invoke(APIstub shim.ChaincodeStubInterface) sc.Response 
 
 func (s *SmartContract) initLedger(APIstub shim.ChaincodeStubInterface) sc.Response {
 	devices := []DeviceInfo{
-		DeviceInfo{PublicKey: "+sBjAJFDE5c1iML63cPh6MPRUDPQgS3Kcwcvg+NkPFI", EncodingScheme: 0, Owner: "org1", ValidationFlag: true},
+		DeviceInfo{PublicKey: "pQBakw2oxXklWGruTdMVnbbNsNG+nsojdlusAiaRVLU", EncodingScheme: 0, Owner: "org1", ValidationFlag: true},
 		DeviceInfo{PublicKey: "RakaJDXqkmm0YzwKxTo4BVVko5T/7oElNdP2FGrUHu8", EncodingScheme: 0, Owner: "org2", ValidationFlag: true},
 		DeviceInfo{PublicKey: "IQ1BO5vN3mcdQz6ZyV1f77uMJnpbJOL1IMqNUiJENeU", EncodingScheme: 0, Owner: "org1", ValidationFlag: true},
 		DeviceInfo{PublicKey: "cOGzNiLH0e2C7WstGQfZk3CRdDSwR3yt58OeTc7f+V0", EncodingScheme: 0, Owner: "org2", ValidationFlag: true},
@@ -240,9 +240,7 @@ func decodeMessageWithDefaultEncodingScheme(b, b2 []byte, device DeviceInfo, dev
 	if err != nil {
 		return SensorData{}, "encoding failure..."
 	}
-	msg := []byte(b[:56])
-	signature := b2
-	verification := ed25519.Verify(pubKeyFromDevice, msg, signature)
+	verification := ed25519.Verify(pubKeyFromDevice, b, b2)
 	if !verification {
 		return SensorData{}, ""
 	}
