@@ -282,6 +282,7 @@ func (s *SmartContract) getAllRecords(APIstub shim.ChaincodeStubInterface) sc.Re
 		if err != nil {
 			return shim.Error(err.Error())
 		}
+		fmt.Printf("Retrieved Key: %s\n",queryResponse.Key)
 		// Add a comma before array members, suppress it for the first array member
 		if bArrayMemberAlreadyWritten == true {
 			buffer.WriteString(",")
