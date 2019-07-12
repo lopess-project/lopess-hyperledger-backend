@@ -12,7 +12,7 @@ networks:
 
 services:
     ca_org1_example_com:
-        image: hyperledger/fabric-ca
+        image: hyperledger/fabric-ca:1.4.1
         environment:
             - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
             - FABRIC_CA_SERVER_CA_NAME=ca.org1.example.com
