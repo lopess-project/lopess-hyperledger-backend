@@ -31,26 +31,26 @@ This project contains configuration files and runnables in order to create a net
 
 *  2 OrdererNodes
 *  2 PeerNodes
-*  1 CA-Node
 *  1 CLI
 
 Note: The installation will only work with images newer > v1.4.1 since raft is utilied as consensus algorithm. All required crypto material and channel config files have been generated beforehand and only need to be adapted when necessary.
 
 Note2: Before deploying, make sure your gopath is set accordingly. Moreover, the library of the go implementation of the ed25519 signing algorithm needs to be included to your local gopath accordingly.
 
-For deploying this network, prepare two hosts and edit the corresponding parameters within the .env file. If this is done, the images can be deployed:
+For deploying this network, prepare two hosts and create a docker swarm overlay network. Then adjust network specific parameters within the docker-compose deployment files. If this is done, the images can be deployed:
 
 Host 1: 
 * clone this gitlab repo
-* $ docker-compose -f deployment/docker-base-raft-org1.yaml up -d
-* $ docker-compose -f deployment/docker-base-peer-org1.yaml up -d
-* $ docker-compose -f deployment/docker-base-cli-org1.yaml up -d
+* $ docker stack deploy --compose-file deployment/docker-compose-raft-org1.yaml net
+* $ docker stack deploy --compose-file deployment/docker-compose-peer-org1.yaml net
+* $ docker stack deploy --compose-file deployment/docker-compose-cli-org1.yaml net
+
 
 Host 2: 
 * clone this gitlab repo
-* $ docker-compose -f deployment/docker-base-raft-org2.yaml up -d
-* $ docker-compose -f deployment/docker-base-peer-org2.yaml up -d
-* $ docker-compose -f deployment/docker-base-cli-org2.yaml up -d
+* $ docker stack deploy --compose-file deployment/docker-compose-raft-org2.yaml net
+* $ docker stack deploy --compose-file deployment/docker-compose-peer-org2.yaml net
+* $ docker stack deploy --compose-file deployment/docker-compose-cli-org2.yaml net
 
 Afterwards check on each machine if the containers are up and running. If so, the following steps need to be performed:
 *  Create the channel (channel name is scka-channel btw) and let all the peers join
@@ -62,7 +62,7 @@ Afterwards check on each machine if the containers are up and running. If so, th
 
 * Host 1:
 
-`$ docker exec -it cli bash`
+`$ docker exec -it <cli_org1_containername> bash`
 `$ peer channel create -o orderer0.ordererOrg1.example.com:7050 -c scka-channel -f ./network-config/channel.tx --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/ordererOrg1.example.com/orderers/orderer0.ordererOrg1.example.com/msp/tlscacerts/tlsca.ordererOrg1.example.com-cert.pem`
 `$ peer channel join -b scka-channel.block`
 
@@ -85,12 +85,12 @@ From there transfer it to the second host via scp:
 Join peer0 from org2:
 
 `$ docker cp scka-channel.block peer0.org2.example.com:/opt/gopath/src/github.com/hyperledger/fabric/peer/scka-channel.block`
-`$ docker exec -it cli bash`
+`$ docker exec -it <cli_org2_containername>  bash`
 `$ peer channel join -b scka-channel.block`
 
 Join peer1 from org2:
 
-`$ CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp CORE_PEER_ADDRESS=peer1.org2.example.com:8051 CORE_PEER_LOCALMSPID="Org2MSP" CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/peers/peer1.org2.example.com/tls/ca.crt peer channel join -b scka-channel.block`
+`$ CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp CORE_PEER_ADDRESS=peer1.org2.example.com:10051 CORE_PEER_LOCALMSPID="Org2MSP" CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/peers/peer1.org2.example.com/tls/ca.crt peer channel join -b scka-channel.block`
 
 # Update Anchor Peers
 
@@ -117,7 +117,7 @@ When the cli was closed and reentered, proceed as follows. Otherwise do it the o
 * Host 2
 
 `$ peer chaincode install -n mycc -v 1.0 -p github.com/chaincode`
-`$ CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp CORE_PEER_ADDRESS=peer1.org2.example.com:8051 CORE_PEER_LOCALMSPID="Org2MSP" CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/peers/peer1.org2.example.com/tls/ca.crt peer chaincode install -n mycc -v 1.0 -p github.com/chaincode`
+`$ CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp CORE_PEER_ADDRESS=peer1.org2.example.com:10051 CORE_PEER_LOCALMSPID="Org2MSP" CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/peers/peer1.org2.example.com/tls/ca.crt peer chaincode install -n mycc -v 1.0 -p github.com/chaincode`
 
 Now that the chaincode is installed on every node, we need to instantiate it once. See below.
 
@@ -135,8 +135,8 @@ The last part defines the endorsing policy of the channel, which means a transac
 
 * Host 1
 
-`$ peer chaincode invoke -o orderer0.ordererOrg1.example.com:7050 --tls true --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/ordererOrg1.example.com/orderers/orderer0.ordererOrg1.example.com/msp/tlscacerts/tlsca.ordererOrg1.example.com-cert.pem -C scka-channel -n mycc --peerAddresses peer0.org1.example.com:7051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt --peerAddresses peer0.org2.example.com:7051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt -c '{"function":"initLedger","Args":[]}'`
-`$ peer chaincode invoke -o orderer0.ordererOrg1.example.com:7050 --tls true --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/ordererOrg1.example.com/orderers/orderer0.ordererOrg1.example.com/msp/tlscacerts/tlsca.ordererOrg1.example.com-cert.pem -C scka-channel -n mycc --peerAddresses peer0.org1.example.com:7051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt --peerAddresses peer0.org2.example.com:7051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt -c '{"function":"registerMeasurement","Args":["qgABgBdIASFwckjEYBKIoVQxPzYAKwBUuZyFoRG+NuvdDpziAN5UWmwfCBPa+JrY94NFEG+4K4/624uP3jNrEOxFjYxTlYoNVyboJqE09i46tMP2LLMJAA=="]}'`
+`$ peer chaincode invoke -o orderer0.ordererOrg1.example.com:7050 --tls true --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/ordererOrg1.example.com/orderers/orderer0.ordererOrg1.example.com/msp/tlscacerts/tlsca.ordererOrg1.example.com-cert.pem -C scka-channel -n mycc --peerAddresses peer0.org1.example.com:7051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt --peerAddresses peer0.org2.example.com:9051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt -c '{"function":"initLedger","Args":[]}'`
+`$ peer chaincode invoke -o orderer0.ordererOrg1.example.com:7050 --tls true --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/ordererOrg1.example.com/orderers/orderer0.ordererOrg1.example.com/msp/tlscacerts/tlsca.ordererOrg1.example.com-cert.pem -C scka-channel -n mycc --peerAddresses peer0.org1.example.com:7051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt --peerAddresses peer0.org2.example.com:9051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt -c '{"function":"registerMeasurement","Args":["qgABoAFwhAQ+AVjJqBFIAIQAAtcAOACmAq4AMDYwMDE1MDQ5MDA1OTU2ME4wMDA4MjU1MTY2MEU=","3xRcKIUbrdehGRbcZOWfFd01z6n6yge3Zsnl9J/L2plU2HiAhAw2RQdG91nmEYsvN005oyf1wy1PaRH09v4oAQ=="]}'`
 
 * Host 2
 
@@ -152,4 +152,8 @@ How the setup is done on a single node env can be read here:
 How this can be done on multiple hosts can be read here:
 
 [https://medium.com/coinmonks/hyperledger-fabric-cluster-on-multiple-hosts-af093f00436](url)
+
+How to setup docker swarm:
+
+[https://medium.com/@malliksarvepalli/hyperledger-fabric-on-multiple-hosts-using-docker-swarm-and-compose-f4b70c64fa7d](url)
 
