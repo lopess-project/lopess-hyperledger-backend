@@ -58,7 +58,7 @@ services:
         ports:
           - 9050:7050
 
-    orderer1.ordererOrg2.example.com:
+    orderer1_ordererOrg2_example_com:
         hostname: orderer1.ordererOrg2.example.com
         image: hyperledger/fabric-orderer:1.4.1
         environment:
