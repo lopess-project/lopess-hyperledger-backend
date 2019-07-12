@@ -35,7 +35,6 @@ services:
             - ORDERER_GENERAL_CLUSTER_CLIENTCERTIFICATE=/var/hyperledger/orderer/tls/server.crt
             - ORDERER_GENERAL_CLUSTER_CLIENTPRIVATEKEY=/var/hyperledger/orderer/tls/server.key
             - ORDERER_GENERAL_CLUSTER_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
-        environment:
             - ORDERER_HOST=orderer0.ordererOrg2.example.com
             - ORDERER_GENERAL_LOCALMSPID=OrdererOrg2MSP
         volumes:
@@ -83,7 +82,6 @@ services:
             - ORDERER_GENERAL_CLUSTER_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
             - ORDERER_HOST=orderer1.ordererOrg2.example.com
             - ORDERER_GENERAL_LOCALMSPID=OrdererOrg2MSP
-            - ORDERER_GENERAL_LISTENPORT=8050
         volumes:
             - ../crypto-config/ordererOrganizations/ordererOrg2.example.com/orderers/orderer1.ordererOrg2.example.com/msp:/var/hyperledger/orderer/msp
             - ../crypto-config/ordererOrganizations/ordererOrg2.example.com/orderers/orderer1.ordererOrg2.example.com/tls:/var/hyperledger/orderer/tls
