@@ -125,7 +125,7 @@ func (s *SmartContract) initLedger(APIstub shim.ChaincodeStubInterface) sc.Respo
 }
 
 func (s *SmartContract) registerDevice(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
-	if len(args) != 3 {
+	if len(args) != 4 {
 		return shim.Error("Incorrect number of arguments. Expecting 4")
 	}
 
@@ -155,7 +155,7 @@ func (s *SmartContract) registerDevice(APIstub shim.ChaincodeStubInterface, args
 
 func (s *SmartContract) revokeDevice(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
 	if len(args) != 1 {
-		return shim.Error("Incorrect number of arguments. Expecting 2")
+		return shim.Error("Incorrect number of arguments. Expecting 1")
 	}
 	id := "DEVICE%s" + args[0]
 	deviceAsBytes, _ := APIstub.GetState(id)
@@ -170,7 +170,7 @@ func (s *SmartContract) revokeDevice(APIstub shim.ChaincodeStubInterface, args [
 func (s *SmartContract) registerMeasurement(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
 
 	if len(args) != 2 {
-		return shim.Error("Incorrect number of arguments. Expecting 1.")
+		return shim.Error("Incorrect number of arguments. Expecting 2.")
 	}
 
 	b, err := base64.StdEncoding.DecodeString(args[0])
