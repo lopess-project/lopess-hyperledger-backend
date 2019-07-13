@@ -23,8 +23,8 @@ services:
             - CORE_PEER_ADDRESSAUTODETECT=true
             - CORE_PEER_MSPCONFIGPATH=/var/hyperledger/peers/msp
             - CORE_LEDGER_STATE_STATEDATABASE=LevelDB
-            - FABRIC_LOGGING_SPEC=DEBUG
-            - CORE_LOGGING_MSP=DEBUG
+            - FABRIC_LOGGING_SPEC=INFO
+            - CORE_LOGGING_MSP=INFO
             # TLS settings
             - CORE_PEER_TLS_ENABLED=true
             - CORE_PEER_TLS_CLIENTAUTHREQUIRED=false
@@ -32,7 +32,7 @@ services:
             - CORE_PEER_TLS_KEY_FILE=/var/hyperledger/peers/tls/server.key
             - CORE_PEER_TLS_ROOTCERT_FILE=/var/hyperledger/peers/tls/ca.crt
             - CORE_PEER_LISTENADDRESS=0.0.0.0:7051
-            - CORE_PEER_CHAINCODELISTENADDRESS=peer0.org2.example.com:7052
+            - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:7052
             - CORE_PEER_ID=peer0.org2.example.com
             - CORE_PEER_ADDRESS=peer0.org2.example.com:7051
             - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.org2.example.com:7051
@@ -76,8 +76,8 @@ services:
             - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=net
             - CORE_PEER_MSPCONFIGPATH=/var/hyperledger/peers/msp
             - CORE_LEDGER_STATE_STATEDATABASE=LevelDB
-            - FABRIC_LOGGING_SPEC=DEBUG
-            - CORE_LOGGING_MSP=DEBUG
+            - FABRIC_LOGGING_SPEC=INFO
+            - CORE_LOGGING_MSP=INFO
             # TLS settings
             - CORE_PEER_TLS_ENABLED=true
             - CORE_PEER_TLS_CLIENTAUTHREQUIRED=false
@@ -85,7 +85,7 @@ services:
             - CORE_PEER_TLS_KEY_FILE=/var/hyperledger/peers/tls/server.key
             - CORE_PEER_TLS_ROOTCERT_FILE=/var/hyperledger/peers/tls/ca.crt
             - CORE_PEER_LISTENADDRESS=0.0.0.0:7051
-            - CORE_PEER_CHAINCODELISTENADDRESS=peer1.org2.example.com:7052
+            - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:7052
             - CORE_PEER_ID=peer1.org2.example.com
             - CORE_PEER_ADDRESS=peer1.org2.example.com:7051
             - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.org2.example.com:7051
