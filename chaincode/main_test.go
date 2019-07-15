@@ -81,6 +81,13 @@ func TestTimeToDateConversion(t *testing.T) {
 	}
 }
 
+func TestDateStringToTime(t *testing.T) {
+	output := convertDateStringToTime("2019-07-15 13:59:39+02:00")
+	if output.String() != "dsd" {
+		t.Errorf("String conversion to date failed. Got %s", output.String())
+	}
+}
+
 func TestDecoding(t *testing.T) {
 	/*** expected Values ***/
 	expectedTimeResult := "2019-07-06 19:43:00 +0200 CEST"
@@ -132,8 +139,8 @@ func TestDecoding(t *testing.T) {
 	if data.Longtitude != expectedLongtitudeResult {
 		t.Errorf("Decoded Longtitude value was not correct, got: %s, want: %s", data.Longtitude, expectedLongtitudeResult)
 	}
-	if data.TSdevice.Local().String() != expectedTimeResult {
-		t.Errorf("Decoded Timestamp value was not correct, got: %s, want: %s", data.TSdevice.Local().String(), expectedTimeResult)
+	if data.TSdevice.String() != expectedTimeResult {
+		t.Errorf("Decoded Timestamp value was not correct, got: %s, want: %s", data.TSdevice.String(), expectedTimeResult)
 	}
 
 }

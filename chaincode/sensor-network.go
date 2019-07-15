@@ -56,8 +56,8 @@ type SensorData struct {
 	Pm25       float32   `json:"pm25"`
 	Temp       float32   `json:"temp"`
 	Humidity   float32   `json:"humidity"`
-	TSdevice   time.Time `json:"timestamp"`
-	TSgw	   string	 `json:"timestamp"`
+	TSdevice   time.Time `json:"tsdevice"`
+	TSgw	   time.Time `json:"tsgw"`
 	Longtitude string    `json:"longtitude"`
 	Latitude   string    `json:"latitude"`
 }
@@ -213,7 +213,7 @@ func (s *SmartContract) registerMeasurement(APIstub shim.ChaincodeStubInterface,
 		if (data == SensorData{} || txId == "") {
 			return shim.Error("Error occured while decoding the message. Either decoding from hex to bytes threw the error or the signature is not valid.")
 		}
-		data.TSgw = args[2]
+		data.TSgw = convertDateStringToTime(args[2])
 		dataAsBytes, _ := json.Marshal(data)
 		APIstub.PutState(txId, dataAsBytes)
 	}
@@ -463,6 +463,12 @@ func calculateLongtitudeFromCharBytes(b []byte) string {
 	return str.String()
 }
 
+func convertDateStringToTime(str string) time.Time {
+	layout := "2006-01-02 15:04:05-07:00"
+	t, _ := time.Parse(layout, str)
+	return t.Local()
+}
+
 // expects 6 byte input + current_time := time.Now().UTC()
 func convertTimestampToDate(b []byte, current_time time.Time) time.Time {
 	hh := string(b[:2])
@@ -492,12 +498,11 @@ func convertTimestampToDate(b []byte, current_time time.Time) time.Time {
 		fmt.Println("Something went wrong when converting time to Date.")
 	}
 
-	return time.Date(year, time.Month(month), day, hours, minutes, seconds, 0, time.UTC)
+	return time.Date(year, time.Month(month), day, hours, minutes, seconds, 0, time.Local)
 }
 
 // The main function is only relevant in unit test mode. Only included here for completeness.
 func main() {
-
 	// Create a new  Smart Contract
 	err := shim.Start(new(SmartContract))
 	if err != nil {
