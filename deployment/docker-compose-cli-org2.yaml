@@ -30,8 +30,8 @@ services:
     volumes:
         - /var/run/:/host/var/run/
         - ../chaincode/:/opt/gopath/src/github.com/chaincode
-        - /home/maurice/goproject/src/github.com/hyperledger/fabric/:/opt/gopath/src/github.com/hyperledger/fabric/
-        - /home/maurice/goproject/src/golang.org/x/crypto/ed25519/:/opt/gopath/src/golang.org/x/crypto/ed25519/
+        - /home/hlfadmin2/goprojects/src/github.com/hyperledger/fabric/:/opt/gopath/src/github.com/hyperledger/fabric/
+        - /home/hlfadmin2/goprojects/src/golang.org/x/crypto/ed25519/:/opt/gopath/src/golang.org/x/crypto/ed25519/
         - ../crypto-config:/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/
         - ../network-config:/opt/gopath/src/github.com/hyperledger/fabric/peer/network-config
     deploy:
