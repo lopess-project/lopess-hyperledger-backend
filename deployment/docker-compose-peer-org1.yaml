@@ -56,7 +56,7 @@ services:
               condition: on-failure
           placement:
                 constraints:
-                  - node.hostname == maurice-mobile
+                  - node.hostname == ess-boyce
         networks:
           net:
              aliases:
@@ -108,7 +108,7 @@ services:
               condition: on-failure
             placement:
                 constraints:
-                    - node.hostname == maurice-mobile
+                    - node.hostname == ess-boyce
         networks:
           net:
              aliases:

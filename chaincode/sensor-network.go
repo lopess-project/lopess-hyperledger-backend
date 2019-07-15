@@ -56,7 +56,8 @@ type SensorData struct {
 	Pm25       float32   `json:"pm25"`
 	Temp       float32   `json:"temp"`
 	Humidity   float32   `json:"humidity"`
-	Timestamp  time.Time `json:"timestamp"`
+	TSdevice   time.Time `json:"timestamp"`
+	TSgw	   string	 `json:"timestamp"`
 	Longtitude string    `json:"longtitude"`
 	Latitude   string    `json:"latitude"`
 }
@@ -169,8 +170,8 @@ func (s *SmartContract) revokeDevice(APIstub shim.ChaincodeStubInterface, args [
 
 func (s *SmartContract) registerMeasurement(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
 
-	if len(args) != 2 {
-		return shim.Error("Incorrect number of arguments. Expecting 2.")
+	if len(args) != 3 {
+		return shim.Error("Incorrect number of arguments. Expecting 3.")
 	}
 
 	b, err := base64.StdEncoding.DecodeString(args[0])
@@ -212,6 +213,7 @@ func (s *SmartContract) registerMeasurement(APIstub shim.ChaincodeStubInterface,
 		if (data == SensorData{} || txId == "") {
 			return shim.Error("Error occured while decoding the message. Either decoding from hex to bytes threw the error or the signature is not valid.")
 		}
+		data.TSgw = args[2]
 		dataAsBytes, _ := json.Marshal(data)
 		APIstub.PutState(txId, dataAsBytes)
 	}
@@ -251,10 +253,10 @@ func decodeMessageWithDefaultEncodingScheme(b, b2 []byte, device DeviceInfo, dev
 	pm25 := calculatePMValueFromBytes(b[21], b[22])
 	humidity := calculateHumidityFromBytes(b[23], b[24])
 	temp := calculateTempFromBytes(b[25], b[26])
-	timestamp := convertTimestampToDate(b[27:33], time.Now().UTC())
+	timestampDevice := convertTimestampToDate(b[27:33], time.Now().UTC())
 	latitude := calculateLatitudeFromCharBytes(b[33:44])
 	longtitude := calculateLongtitudeFromCharBytes(b[44:56])
-	var data = SensorData{DeviceId: deviceIdStr, Timestamp: timestamp, Pm10: pm10, Pm25: pm25, Humidity: humidity, Temp: temp, Latitude: latitude, Longtitude: longtitude}
+	var data = SensorData{DeviceId: deviceIdStr, TSdevice: timestampDevice, Pm10: pm10, Pm25: pm25, Humidity: humidity, Temp: temp, Latitude: latitude, Longtitude: longtitude}
 	return data, txId
 }
 

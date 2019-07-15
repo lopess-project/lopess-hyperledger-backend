@@ -41,6 +41,6 @@ services:
           condition: on-failure
       placement:
             constraints:
-              - node.hostname == maurice-TERRA-PC
+              - node.hostname == ess-keyla
     networks:
       - net

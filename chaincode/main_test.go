@@ -54,6 +54,15 @@ func TestLongtitudeConversion(t *testing.T) {
 	}
 }
 
+func TestBase64Conversion(t *testing.T) {
+	b := []byte{165 ,0 ,90 ,147 ,13 ,168 ,197 ,121 ,37 ,88 ,106 ,238 ,77 ,211 ,21 ,157 ,182 ,205 ,176 ,209 ,190 ,158 ,202 ,35 ,118 ,91 ,172 ,2 ,38 ,145 ,84 ,181}
+	output := base64.RawStdEncoding.EncodeToString(b)
+
+	if output != "test" {
+		t.Errorf("Base64 encoding failed. Expected... Got: %s", output)
+	}
+}
+
 func TestTimeToDateConversion(t *testing.T) {
 	expectedResult := "2019-07-06 19:43:00 +0200 CEST"
 	b := []byte{'1', '7', '4', '3', '0', '0'}
@@ -78,8 +87,8 @@ func TestDecoding(t *testing.T) {
 	expectedLatitudeResult := "049°00'33624\"N"
 	expectedLongtitudeResult := "0008°25'31116\"E"
 	/*** test ***/
-	encodedString := "qgABoAFwhAQ+AVjJqBFIAIQAAtcAOACmAq4AMDYwMDE1MDQ5MDA1OTU2ME4wMDA4MjU1MTY2MEU="
-	sig := "3xRcKIUbrdehGRbcZOWfFd01z6n6yge3Zsnl9J/L2plU2HiAhAw2RQdG91nmEYsvN005oyf1wy1PaRH09v4oAQ=="
+	encodedString := "qgABrQv6mBZ7BiuYZx4OXg8FlU4CdgCvAtUAMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDA="
+	sig := "AfldAtf39XTim33H3mWlEz85SBi0k0GCOhQYMGtbSoOLDKyKx9SvE1NMNWYUdzN8he2A3UPeyACHDSchTo/7Ag=="
 	signature, err := base64.StdEncoding.DecodeString(sig)
 	input, err := base64.StdEncoding.DecodeString(encodedString)
 	if err != nil {
@@ -92,7 +101,7 @@ func TestDecoding(t *testing.T) {
 	if deviceId != 1 {
 		t.Errorf("conversion from byte 2-3 to integer failed")
 	}
-	device := DeviceInfo{PublicKey: "pQBakw2oxXklWGruTdMVnbbNsNG+nsojdlusAiaRVLU", EncodingScheme: 0, Owner: "org1", ValidationFlag: true}
+	device := DeviceInfo{PublicKey: "RakaJDXqkmm0YzwKxTo4BVVko5T/7oElNdP2FGrUHu8", EncodingScheme: 0, Owner: "org1", ValidationFlag: true}
 	uuidBytes := []byte{128, 23, 72, 1, 33, 112, 114, 72, 196, 96, 18, 136, 161, 84, 49, 63}
 	expectedUUID := hex.EncodeToString(uuidBytes)
 	data, txId := decodeMessageWithDefaultEncodingScheme(input, signature, device, 1)
@@ -123,8 +132,8 @@ func TestDecoding(t *testing.T) {
 	if data.Longtitude != expectedLongtitudeResult {
 		t.Errorf("Decoded Longtitude value was not correct, got: %s, want: %s", data.Longtitude, expectedLongtitudeResult)
 	}
-	if data.Timestamp.Local().String() != expectedTimeResult {
-		t.Errorf("Decoded Timestamp value was not correct, got: %s, want: %s", data.Timestamp.Local().String(), expectedTimeResult)
+	if data.TSdevice.Local().String() != expectedTimeResult {
+		t.Errorf("Decoded Timestamp value was not correct, got: %s, want: %s", data.TSdevice.Local().String(), expectedTimeResult)
 	}
 
 }
