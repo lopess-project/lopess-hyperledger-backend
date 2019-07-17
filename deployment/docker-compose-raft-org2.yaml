@@ -49,7 +49,7 @@ services:
               condition: on-failure
           placement:
                 constraints:
-                  - node.hostname == ess-keyla
+                  - node.hostname == hlf-server-2
         networks:
           net:
              aliases:
@@ -94,7 +94,7 @@ services:
               condition: on-failure
           placement:
                 constraints:
-                  - node.hostname == ess-keyla
+                  - node.hostname == hlf-server-2
         networks:
           net:
              aliases:
