@@ -47,7 +47,7 @@ services:
             - ../crypto-config/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls:/var/hyperledger/peers/tls
             - ../crypto-config/peerOrganizations/org2.example.com/users:/var/hyperledger/users
             - /var/run/:/host/var/run/
-            - /home/maurice/goproject/src/github.com/hyperledger/fabric/:/opt/gopath/src/github.com/hyperledger/fabric/
+            - /home/hlfadmin2/goprojects/src/github.com/hyperledger/fabric/:/opt/gopath/src/github.com/hyperledger/fabric/
             - peer0.org2.example.com:/var/hyperledger/production
         deploy:
           mode: replicated
@@ -56,7 +56,7 @@ services:
               condition: on-failure
           placement:
                 constraints:
-                  - node.hostname == ess-keyla
+                  - node.hostname == hlf-server-2
         networks:
           net:
              aliases:
@@ -98,7 +98,7 @@ services:
             - ../crypto-config/peerOrganizations/org2.example.com/peers/peer1.org2.example.com/tls:/var/hyperledger/peers/tls
             - ../crypto-config/peerOrganizations/org2.example.com/users:/var/hyperledger/users
             - /var/run/:/host/var/run/
-            - /home/maurice/goproject/src/github.com/hyperledger/fabric/:/opt/gopath/src/github.com/hyperledger/fabric/
+            - /home/hlfadmin2/goprojects/src/github.com/hyperledger/fabric/:/opt/gopath/src/github.com/hyperledger/fabric/
             - peer1.org2.example.com:/var/hyperledger/production
         deploy:
           mode: replicated
@@ -107,7 +107,7 @@ services:
               condition: on-failure
           placement:
                 constraints:
-                  - node.hostname == ess-keyla
+                  - node.hostname == hlf-server-2
         networks:
           net:
              aliases:
