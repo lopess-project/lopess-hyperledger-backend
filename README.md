@@ -10,7 +10,6 @@ The project is structured as follows:
 ├── deployment
 ├── fabric-config
 ├── network-config
-├── .env
 └── README.md
 ```
 
@@ -22,7 +21,6 @@ where:
     *  deployment/      contains all .yaml files for deploying the required components as docker container.
     *  fabric-config/   contains the basic configuration necessary for the bin/cryptogen and bin/configtxgen executables.
     *  network-config/  contains the output of the bin/configtxgen executable.
-    *  .env             defines project-wide config parameters.
 
 
 # Setup and Installation Guide
