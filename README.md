@@ -91,7 +91,7 @@ Join peer0 from org2:
 
 Join peer1 from org2:
 
-`$ CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp CORE_PEER_ADDRESS=peer1.org2.example.com:10051 CORE_PEER_LOCALMSPID="Org2MSP" CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/peers/peer1.org2.example.com/tls/ca.crt peer channel join -b scka-channel.block`
+`$ CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp CORE_PEER_ADDRESS=peer1.org2.example.com:7051 CORE_PEER_LOCALMSPID="Org2MSP" CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/peers/peer1.org2.example.com/tls/ca.crt peer channel join -b scka-channel.block`
 
 # Update Anchor Peers
 
@@ -124,9 +124,9 @@ Now that the chaincode is installed on every node, we need to instantiate it onc
 
 * Host 1
 
-`$ peer chaincode instantiate -o orderer0.ordererOrg1.example.com:7050 --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/ordererOrg1.example.com/orderers/orderer0.ordererOrg1.example.com/msp/tlscacerts/tlsca.ordererOrg1.example.com-cert.pem -C scka-channel -n mycc -v 1.0 -c '{"Args":[]}' -P "AND ('Org1MSP.peer','Org2MSP.peer')" --peerAddresses peer0.org1.example.com:7051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt`
+`$ peer chaincode instantiate -o orderer0.ordererOrg1.example.com:7050 --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/ordererOrg1.example.com/orderers/orderer0.ordererOrg1.example.com/msp/tlscacerts/tlsca.ordererOrg1.example.com-cert.pem -C scka-channel -n mycc -v 1.0 -c '{"Args":[]}' --peerAddresses peer0.org1.example.com:7051 --tlsRootCertFiles /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt`
 
-The last part defines the endorsing policy of the channel, which means a transaction needs to be endorsed by at least one peer of org1 AND one peer of org2. When this is done, we can invoke and query transactions.
+There is also the option of defining a specific endorsement policy for the channel. Therefore, simply add '-P "AND ('Org1MSP.peer','Org2MSP.peer')"' as an argument. This policy defines that a transaction needs to be endorsed by at least one peer of org1 AND one peer of org2. Default is the OR operator. When this is done, we can invoke and query transactions.
 
 # Invoke and query chaincode
 
