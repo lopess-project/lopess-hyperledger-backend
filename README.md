@@ -38,7 +38,8 @@ Note: The installation will only work with images newer > v1.4.1 since raft is u
 
 Note2: Before deploying, make sure your gopath is set accordingly. Moreover, the library of the go implementation of the ed25519 signing algorithm needs to be included to your local gopath accordingly.
 
-For deploying this network, prepare two hosts and create a docker swarm overlay network. Then adjust network specific parameters within the docker-compose deployment files. If this is done, the images can be deployed:
+For deploying this network, prepare two hosts and create a docker swarm overlay network. How this is done, can be found out by following the link at the bottom of this page. 
+After setting up the swarm, adjust network specific parameters within the docker-compose deployment files like the host names of the swarm machines as well as directory paths for mapping the volumes. If this is done, the images can be deployed:
 
 Host 1: 
 * clone this gitlab repo
@@ -54,6 +55,7 @@ Host 2:
 * $ docker stack deploy --compose-file deployment/docker-compose-cli-org2.yaml net
 
 Afterwards check on each machine if the containers are up and running. If so, the following steps need to be performed:
+
 *  Create the channel (channel name is scka-channel btw) and let all the peers join
 *  Update Anchor Peers
 *  Install and instantiate the chaincode in order to interact
