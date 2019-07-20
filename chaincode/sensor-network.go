@@ -149,7 +149,7 @@ func (s *SmartContract) registerDevice(APIstub shim.ChaincodeStubInterface, args
 
 	var data = DeviceInfo{PublicKey: args[0], EncodingScheme: scheme, Owner: args[2], ValidationFlag: vflag}
 	dataAsBytes, _ := json.Marshal(data)
-	APIstub.PutState("DEVICE%s"+strconv.Itoa(i), dataAsBytes)
+	APIstub.PutState("DEVICE%s"+strconv.Itoa(i+1), dataAsBytes)
 
 	return shim.Success(nil)
 }
@@ -318,6 +318,7 @@ func (s *SmartContract) getMeasurementRecords(APIstub shim.ChaincodeStubInterfac
 	buffer.WriteString("[")
 
 	bArrayMemberAlreadyWritten := false
+	blocks := 0
 	for resultsIterator.HasNext() {
 		queryResponse, err := resultsIterator.Next()
 		if err != nil {
@@ -328,6 +329,7 @@ func (s *SmartContract) getMeasurementRecords(APIstub shim.ChaincodeStubInterfac
 			buffer.WriteString(",")
 		}
 		if strings.HasPrefix(queryResponse.Key, "DEVICE") == false {
+			blocks = blocks + 1
 			buffer.WriteString("{\"Key\":")
 			buffer.WriteString("\"")
 			buffer.WriteString(queryResponse.Key)
@@ -340,6 +342,10 @@ func (s *SmartContract) getMeasurementRecords(APIstub shim.ChaincodeStubInterfac
 			bArrayMemberAlreadyWritten = true
 		}
 	}
+	buffer.WriteString("\"TotalBlocks\":")
+	buffer.WriteString("\"")
+	buffer.WriteString(strconv.Itoa(blocks))
+	buffer.WriteString("\"")
 	buffer.WriteString("]")
 
 	fmt.Printf("- queryMeasurementData:\n%s\n", buffer.String())
