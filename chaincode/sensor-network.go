@@ -43,6 +43,7 @@ import (
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 	sc "github.com/hyperledger/fabric/protos/peer"
 	"golang.org/x/crypto/ed25519"
+	"github.com/google/uuid"
 )
 
 // Define the Smart Contract structure
@@ -101,6 +102,8 @@ func (s *SmartContract) Invoke(APIstub shim.ChaincodeStubInterface) sc.Response 
 		return s.getDeviceRecords(APIstub)
 	} else if function == "getAllRecords" {
 		return s.getAllRecords(APIstub)
+	} else if function == "testTransaction" {
+		return s.testTransaction(APIstub)
 	}
 	return shim.Error("Invalid Smart Contract function name.")
 }
@@ -122,6 +125,17 @@ func (s *SmartContract) initLedger(APIstub shim.ChaincodeStubInterface) sc.Respo
 		fmt.Println("Added", devices[i])
 		i = i + 1
 	}
+	return shim.Success(nil)
+}
+
+/*** This function is only imlpemented for performance tests ***/
+func (s *SmartContract) testTransaction(APIstub shim.ChaincodeStubInterface) sc.Response {
+	
+	key := uuid.New().String()
+
+	var testData = SensorData{DeviceId: "DEVICE1", Pm10: 1.0, Pm25: 2.0, Temp: 3.0, Humidity: 4.0, TSdevice: time.Now().UTC(), TSgw: time.Now().UTC(), Latitude: "000000", Longtitude: "000000"}
+	testDataAsBytes, _ := json.Marshal(testData)
+	APIstub.PutState(key, testDataAsBytes)
 	return shim.Success(nil)
 }
 
@@ -147,6 +161,8 @@ func (s *SmartContract) registerDevice(APIstub shim.ChaincodeStubInterface, args
 	vflag, err := strconv.ParseBool(args[3])
 	scheme, err := strconv.Atoi(args[1])
 
+	fmt.Printf("- registerDevice:\nDEVICE%s\n", strconv.Itoa(i+1))
+
 	var data = DeviceInfo{PublicKey: args[0], EncodingScheme: scheme, Owner: args[2], ValidationFlag: vflag}
 	dataAsBytes, _ := json.Marshal(data)
 	APIstub.PutState("DEVICE%s"+strconv.Itoa(i+1), dataAsBytes)
@@ -159,6 +175,7 @@ func (s *SmartContract) revokeDevice(APIstub shim.ChaincodeStubInterface, args [
 		return shim.Error("Incorrect number of arguments. Expecting 1")
 	}
 	id := "DEVICE%s" + args[0]
+	fmt.Printf("- revokeDevice:\nDEVICE%s\n", id)
 	deviceAsBytes, _ := APIstub.GetState(id)
 	device := DeviceInfo{}
 	json.Unmarshal(deviceAsBytes, &device)
