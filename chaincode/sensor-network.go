@@ -43,7 +43,6 @@ import (
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 	sc "github.com/hyperledger/fabric/protos/peer"
 	"golang.org/x/crypto/ed25519"
-	"github.com/google/uuid"
 )
 
 // Define the Smart Contract structure
@@ -103,7 +102,7 @@ func (s *SmartContract) Invoke(APIstub shim.ChaincodeStubInterface) sc.Response 
 	} else if function == "getAllRecords" {
 		return s.getAllRecords(APIstub)
 	} else if function == "testTransaction" {
-		return s.testTransaction(APIstub)
+		return s.testTransaction(APIstub, args)
 	}
 	return shim.Error("Invalid Smart Contract function name.")
 }
@@ -129,9 +128,9 @@ func (s *SmartContract) initLedger(APIstub shim.ChaincodeStubInterface) sc.Respo
 }
 
 /*** This function is only imlpemented for performance tests ***/
-func (s *SmartContract) testTransaction(APIstub shim.ChaincodeStubInterface) sc.Response {
+func (s *SmartContract) testTransaction(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
 	
-	key := uuid.New().String()
+	key := args[0]
 	timeObj := convertDateStringToTime("2019-07-27 13:59:39+02:00")
 	var testData = SensorData{DeviceId: "DEVICE1", Pm10: 1.0, Pm25: 2.0, Temp: 3.0, Humidity: 4.0, TSdevice: timeObj, TSgw: timeObj, Latitude: "000000", Longtitude: "000000"}
 	testDataAsBytes, _ := json.Marshal(testData)
