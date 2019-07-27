@@ -132,8 +132,8 @@ func (s *SmartContract) initLedger(APIstub shim.ChaincodeStubInterface) sc.Respo
 func (s *SmartContract) testTransaction(APIstub shim.ChaincodeStubInterface) sc.Response {
 	
 	key := uuid.New().String()
-
-	var testData = SensorData{DeviceId: "DEVICE1", Pm10: 1.0, Pm25: 2.0, Temp: 3.0, Humidity: 4.0, TSdevice: time.Now().UTC(), TSgw: time.Now().UTC(), Latitude: "000000", Longtitude: "000000"}
+	timeObj := convertDateStringToTime("2019-07-27 13:59:39+02:00")
+	var testData = SensorData{DeviceId: "DEVICE1", Pm10: 1.0, Pm25: 2.0, Temp: 3.0, Humidity: 4.0, TSdevice: timeObj, TSgw: timeObj, Latitude: "000000", Longtitude: "000000"}
 	testDataAsBytes, _ := json.Marshal(testData)
 	APIstub.PutState(key, testDataAsBytes)
 	return shim.Success(nil)
@@ -161,11 +161,12 @@ func (s *SmartContract) registerDevice(APIstub shim.ChaincodeStubInterface, args
 	vflag, err := strconv.ParseBool(args[3])
 	scheme, err := strconv.Atoi(args[1])
 
-	fmt.Printf("- registerDevice:\nDEVICE%s\n", strconv.Itoa(i+1))
+	fmt.Printf("- registerDevice:\nDEVICE%s\n", strconv.Itoa(i))
 
 	var data = DeviceInfo{PublicKey: args[0], EncodingScheme: scheme, Owner: args[2], ValidationFlag: vflag}
 	dataAsBytes, _ := json.Marshal(data)
-	APIstub.PutState("DEVICE%s"+strconv.Itoa(i+1), dataAsBytes)
+	deviceIdAsString := "DEVICE" + strconv.Itoa(i)
+	APIstub.PutState(deviceIdAsString, dataAsBytes)
 
 	return shim.Success(nil)
 }
@@ -174,8 +175,8 @@ func (s *SmartContract) revokeDevice(APIstub shim.ChaincodeStubInterface, args [
 	if len(args) != 1 {
 		return shim.Error("Incorrect number of arguments. Expecting 1")
 	}
-	id := "DEVICE%s" + args[0]
-	fmt.Printf("- revokeDevice:\nDEVICE%s\n", id)
+	id := args[0]
+	fmt.Printf("- revokeDevice:\n%s\n", id)
 	deviceAsBytes, _ := APIstub.GetState(id)
 	device := DeviceInfo{}
 	json.Unmarshal(deviceAsBytes, &device)
